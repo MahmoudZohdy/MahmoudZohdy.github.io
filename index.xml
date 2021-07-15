@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>My First Security Blog</title>
+    <link>https://MahmoudZohdy.github.io/</link>
+    <description>Recent content on My First Security Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 15 Jul 2021 19:57:14 +0200</lastBuildDate><atom:link href="https://MahmoudZohdy.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>SecondPost</title>
+      <link>https://MahmoudZohdy.github.io/posts/secondpost/</link>
+      <pubDate>Thu, 15 Jul 2021 19:57:14 +0200</pubDate>
+      
+      <guid>https://MahmoudZohdy.github.io/posts/secondpost/</guid>
+      <description>#include &amp;lt;iostream&amp;gt;using namespace std; int main() { cout &amp;lt;&amp;lt; &amp;#34;Hello World!&amp;#34;; return 0; } </description>
+    </item>
+    
+    <item>
+      <title>FirstPost</title>
+      <link>https://MahmoudZohdy.github.io/posts/firstpost/</link>
+      <pubDate>Thu, 15 Jul 2021 19:57:05 +0200</pubDate>
+      
+      <guid>https://MahmoudZohdy.github.io/posts/firstpost/</guid>
+      <description>#include &amp;lt;iostream&amp;gt;using namespace std; int main() { cout &amp;lt;&amp;lt; &amp;#34;Hello World!&amp;#34;; return 0; } </description>
+    </item>
+    
+  </channel>
+</rss>
