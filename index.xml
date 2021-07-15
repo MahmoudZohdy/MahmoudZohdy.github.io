@@ -22,8 +22,8 @@
       <pubDate>Thu, 15 Jul 2021 19:57:05 +0200</pubDate>
       
       <guid>https://MahmoudZohdy.github.io/posts/firstpost/</guid>
-      <description>#include &amp;lt;iostream&amp;gt;using namespace std; int main() { cout &amp;lt;&amp;lt; &amp;#34;Hello World!&amp;#34;; return 0; } How does it work? The peloader directory contains a custom PE/COFF loader derived from ndiswrapper. The library will process the relocations and imports, then provide a dlopen-like API. The code supports debugging with gdb (including symbols), basic block coverage collection, and runtime hooking and patching.
-#include &amp;lt;iostream&amp;gt;using namespace std; int main() { cout &amp;lt;&amp;lt; &amp;#34;Hello World!&amp;#34;; cout &amp;lt;&amp;lt; &amp;#34;Hello World!</description>
+      <description>#include &amp;lt;iostream&amp;gt;using namespace std; int main() { cout &amp;lt;&amp;lt; &amp;#34;Hello World!&amp;#34;; return 0; }   How does it work? The peloader directory contains a custom PE/COFF loader derived from ndiswrapper. The library will process the relocations and imports, then provide a dlopen-like API. The code supports debugging with gdb (including symbols), basic block coverage collection, and runtime hooking and patching.
+#include &amp;lt;iostream&amp;gt;using namespace std; int main() { cout &amp;lt;&amp;lt; &amp;#34;Hello World!</description>
     </item>
     
   </channel>
