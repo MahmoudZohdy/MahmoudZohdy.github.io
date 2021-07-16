@@ -1,35 +1,176 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-us">
-<title>FirstPost | My First Security Blog</title>
-<meta charset="utf-8">
-<meta name="generator" content="Hugo 0.85.0" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="https://MahmoudZohdy.github.io/css/index.css">
-<link rel="canonical" href="https://MahmoudZohdy.github.io/posts/firstpost/">
-<link rel="alternate" type="application/rss+xml" href="" title="My First Security Blog">
+  <head>
+    <title>CVE-2020-12138 Exploit Proof-of-Concept, Privilege Escalation in ATI Technologies Inc. Driver atillk64.sys // In the love of breaking</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.85.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="John Doe" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="https://MahmoudZohdy.github.io/css/main.min.4a7ec8660f9a44b08c4da97c5f2e31b1192df1d4d0322e65c0dbbc6ecb1b863f.css" />
 
-<header>
-  
-    <a href="https://MahmoudZohdy.github.io/" class="title">My First Security Blog</a>
-  
-  
-</header>
+    
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="CVE-2020-12138 Exploit Proof-of-Concept, Privilege Escalation in ATI Technologies Inc. Driver atillk64.sys"/>
+<meta name="twitter:description" content="/*: can have only one of &mdash; in post */
+/*: add all the lines between in bix */
+#include &lt;iostream&gt;using namespace std; int main() { cout &lt;&lt; &#34;Hello World!&#34;; return 0; } /*: hyper link to string */
+FuzzySecurity
+/*: add image */
+/*: put dot before the string */
+ have either an MmMapIoSpace or ZwMapViewOfSection import.  /*: bold */
+I&rsquo;m not claiming responsibility for finding the vulnerability, since I was far from the first."/>
 
-<article>
-  <header>
-    <h1>FirstPost</h1>
-    <time datetime="2021-07-15T19:57:05&#43;02:00">July 15, 2021</time>
-  </header>
-  <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;iostream&gt;</span><span style="color:#75715e">
+    <meta property="og:title" content="CVE-2020-12138 Exploit Proof-of-Concept, Privilege Escalation in ATI Technologies Inc. Driver atillk64.sys" />
+<meta property="og:description" content="/*: can have only one of &mdash; in post */
+/*: add all the lines between in bix */
+#include &lt;iostream&gt;using namespace std; int main() { cout &lt;&lt; &#34;Hello World!&#34;; return 0; } /*: hyper link to string */
+FuzzySecurity
+/*: add image */
+/*: put dot before the string */
+ have either an MmMapIoSpace or ZwMapViewOfSection import.  /*: bold */
+I&rsquo;m not claiming responsibility for finding the vulnerability, since I was far from the first." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://MahmoudZohdy.github.io/posts/firstpost/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2020-04-25T00:00:00+00:00" />
+<meta property="article:modified_time" content="2020-04-25T00:00:00+00:00" />
+
+
+
+  </head>
+  <body>
+    <header class="app-header">
+      <a href="https://MahmoudZohdy.github.io/"><img class="app-header-avatar" src="https://github.com/MahmoudZohdy/MahmoudZohdy.github.io/raw/main/doc/images/image.png" alt="John Doe" /></a>
+      <h1>In the love of breaking</h1>
+      <nav class="app-header-menu">
+          <a class="app-header-menu-item" href="/">Home</a>
+            
+
+          
+          <a class="app-header-menu-item" href="/tags/">Tags</a>
+            
+
+          
+          <a class="app-header-menu-item" href="/aboutme/">About</a>
+            
+
+          
+          <a class="app-header-menu-item" href="/posts/firstpost/">explotation</a>
+            
+
+          
+          <a class="app-header-menu-item" href="/posts/firstpost/">low-level development</a>
+            
+
+          
+          <a class="app-header-menu-item" href="/posts/firstpost/">Reverse Engineering</a>
+            
+
+          
+          <a class="app-header-menu-item" href="/posts/firstpost/">Windows internal</a>
+      </nav>
+      <p>Reverse Engineering, Windows internal, low-level development, explotation</p>
+      <div class="app-header-social">
+        
+          <a href="https://github.com/MahmoudZohdy" target="_blank" rel="noreferrer noopener">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-github">
+  <title>My Github</title>
+  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+</svg>
+          </a>
+        
+          <a href="https://www.linkedin.com/in/mahmoud-zohdy-519328124/" target="_blank" rel="noreferrer noopener">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-linkedin">
+  <title>My linkedin</title>
+  <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle>
+</svg>
+          </a>
+        
+          <a href="https://twitter.com/7odaZohdy" target="_blank" rel="noreferrer noopener">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-link">
+  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+</svg>
+          </a>
+        
+          <a href="abdelaziz.zohdy@gmail.com" target="_blank" rel="noreferrer noopener">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-link">
+  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+</svg>
+          </a>
+        
+      </div>
+    </header>
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">CVE-2020-12138 Exploit Proof-of-Concept, Privilege Escalation in ATI Technologies Inc. Driver atillk64.sys</h1>
+      <div class="post-meta">
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
+  <title>calendar</title>
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
+</svg>
+          Apr 25, 2020
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
+  <title>clock</title>
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+          1 min read
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tag">
+  <title>tag</title>
+  <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line>
+</svg>
+              <a class="tag" href="https://MahmoudZohdy.github.io/tags/drivers/">Drivers</a>
+              <a class="tag" href="https://MahmoudZohdy.github.io/tags/windows/">Windows</a>
+        </div>
+      </div>
+    </header>
+    <div class="post-content">
+      <p>/*:
+can have only one of &mdash; in post
+*/</p>
+<p>/*:
+add all the lines between in bix
+*/</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;iostream&gt;</span><span style="color:#75715e">
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">using</span> <span style="color:#66d9ef">namespace</span> std;
 
 <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>() {
   cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;Hello World!&#34;</span>;
   <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
 }
-</code></pre></div><p><img src="https://github.com/MahmoudZohdy/MahmoudZohdy.github.io/raw/main/doc/images/image.png" alt="mahmoud"></p>
-<p><img src="https://media.giphy.com/media/2pDSW8QQU6jRe/giphy.gif" alt="hello iam mahmoud?"></p>
+</code></pre></div><p>/*:
+hyper link to string
+*/</p>
+<p><a href="https://www.fuzzysecurity.com/tutorials.html">FuzzySecurity</a></p>
+<p>/*:
+add image
+*/</p>
+<p><img src="https://github.com/MahmoudZohdy/MahmoudZohdy.github.io/raw/main/doc/images/image.png" alt="mahmoud">
+<img src="/doc/images/image.png" alt="mahmoud">
+<img src="https://media.giphy.com/media/2pDSW8QQU6jRe/giphy.gif" alt="hello iam mahmoud?"></p>
+<p>/*:
+put dot before the string
+*/</p>
+<ul>
+<li>have either an <code>MmMapIoSpace</code> or <code>ZwMapViewOfSection</code> import.</li>
+</ul>
+<p>/*:
+bold
+*/</p>
+<p><strong>I&rsquo;m not claiming responsibility for finding the vulnerability, since I was far from the first.</strong></p>
 <h3 id="how-does-it-work">How does it work?</h3>
+<p>/*:
+`` add string in box
+*/</p>
 <p>The <code>peloader</code> directory contains a custom PE/COFF loader derived from
 ndiswrapper. The library will process the relocations and imports, then provide
 a <code>dlopen</code>-like API. The code supports debugging with gdb (including symbols),
@@ -43,9 +184,20 @@ basic block coverage collection, and runtime hooking and patching.</p>
   cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;Hello World!&#34;</span>;
   <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
 }
-</code></pre></div>
-</article>
+</code></pre></div><p>Background</p>
+<h1 id="background">Background</h1>
+<h2 id="background-1">Background</h2>
+<h3 id="background-2">Background</h3>
+<h4 id="background-3">Background</h4>
+<h5 id="background-4">Background</h5>
+<h6 id="background-5">Background</h6>
 
+    </div>
+    <div class="post-footer">
+      
+    </div>
+  </article>
 
-
+    </main>
+  </body>
 </html>

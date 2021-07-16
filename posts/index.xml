@@ -1,29 +1,38 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Posts on My First Security Blog</title>
+    <title>Posts on In the love of breaking</title>
     <link>https://MahmoudZohdy.github.io/posts/</link>
-    <description>Recent content in Posts on My First Security Blog</description>
+    <description>Recent content in Posts on In the love of breaking</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Thu, 15 Jul 2021 19:57:14 +0200</lastBuildDate><atom:link href="https://MahmoudZohdy.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>SecondPost</title>
-      <link>https://MahmoudZohdy.github.io/posts/secondpost/</link>
+      <title>post2</title>
+      <link>https://MahmoudZohdy.github.io/posts/post2/</link>
       <pubDate>Thu, 15 Jul 2021 19:57:14 +0200</pubDate>
       
-      <guid>https://MahmoudZohdy.github.io/posts/secondpost/</guid>
+      <guid>https://MahmoudZohdy.github.io/posts/post2/</guid>
       <description>#include &amp;lt;iostream&amp;gt;using namespace std; int main() { cout &amp;lt;&amp;lt; &amp;#34;Hello World!&amp;#34;; return 0; } </description>
     </item>
     
     <item>
-      <title>FirstPost</title>
-      <link>https://MahmoudZohdy.github.io/posts/firstpost/</link>
-      <pubDate>Thu, 15 Jul 2021 19:57:05 +0200</pubDate>
+      <title>post3</title>
+      <link>https://MahmoudZohdy.github.io/posts/post3/</link>
+      <pubDate>Thu, 15 Jul 2021 19:57:14 +0200</pubDate>
       
-      <guid>https://MahmoudZohdy.github.io/posts/firstpost/</guid>
-      <description>#include &amp;lt;iostream&amp;gt;using namespace std; int main() { cout &amp;lt;&amp;lt; &amp;#34;Hello World!&amp;#34;; return 0; } How does it work? The peloader directory contains a custom PE/COFF loader derived from ndiswrapper. The library will process the relocations and imports, then provide a dlopen-like API. The code supports debugging with gdb (including symbols), basic block coverage collection, and runtime hooking and patching.
-#include &amp;lt;iostream&amp;gt;using namespace std; int main() { cout &amp;lt;&amp;lt; &amp;#34;Hello World!&amp;#34;; cout &amp;lt;&amp;lt; &amp;#34;Hello World!</description>
+      <guid>https://MahmoudZohdy.github.io/posts/post3/</guid>
+      <description>#include &amp;lt;iostream&amp;gt;using namespace std; int main() { cout &amp;lt;&amp;lt; &amp;#34;Hello World!&amp;#34;; return 0; } </description>
+    </item>
+    
+    <item>
+      <title>post1</title>
+      <link>https://MahmoudZohdy.github.io/posts/post1/</link>
+      <pubDate>Sat, 25 Apr 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://MahmoudZohdy.github.io/posts/post1/</guid>
+      <description>Background I&amp;rsquo;ve been focusing, really since the end of January, on working through the FuzzySecurity exploit development tutorials on the HackSysExtremeVulnerableDriver to try and learn some more about Windows kernel exploitation and have really enjoyed my time a lot.
+During this time, @ihack4falafel released some proof-of-concept exploits[1][2] against several Windows kernel-mode drivers. The takeaway from these write-ups, for me, was that 3rd party drivers that are responsible for overclocking, RGB light-management, hardware diagnostics are largely broken.</description>
     </item>
     
   </channel>

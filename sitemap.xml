@@ -2,20 +2,45 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://MahmoudZohdy.github.io/aboutme/</loc>
+    <lastmod>2021-07-15T19:57:14+02:00</lastmod>
+  </url><url>
+    <loc>https://MahmoudZohdy.github.io/explotation/</loc>
+    <lastmod>2021-07-15T19:57:14+02:00</lastmod>
+  </url><url>
     <loc>https://MahmoudZohdy.github.io/</loc>
+    <lastmod>2021-07-15T19:57:14+02:00</lastmod>
+  </url><url>
+    <loc>https://MahmoudZohdy.github.io/posts/post2/</loc>
+    <lastmod>2021-07-15T19:57:14+02:00</lastmod>
+  </url><url>
+    <loc>https://MahmoudZohdy.github.io/posts/post3/</loc>
     <lastmod>2021-07-15T19:57:14+02:00</lastmod>
   </url><url>
     <loc>https://MahmoudZohdy.github.io/posts/</loc>
     <lastmod>2021-07-15T19:57:14+02:00</lastmod>
   </url><url>
-    <loc>https://MahmoudZohdy.github.io/posts/secondpost/</loc>
+    <loc>https://MahmoudZohdy.github.io/re/</loc>
     <lastmod>2021-07-15T19:57:14+02:00</lastmod>
   </url><url>
-    <loc>https://MahmoudZohdy.github.io/posts/firstpost/</loc>
-    <lastmod>2021-07-15T19:57:05+02:00</lastmod>
+    <loc>https://MahmoudZohdy.github.io/wi/</loc>
+    <lastmod>2021-07-15T19:57:14+02:00</lastmod>
   </url><url>
-    <loc>https://MahmoudZohdy.github.io/categories/</loc>
+    <loc>https://MahmoudZohdy.github.io/tags/drivers/</loc>
+    <lastmod>2020-04-25T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://MahmoudZohdy.github.io/posts/post1/</loc>
+    <lastmod>2020-04-25T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://MahmoudZohdy.github.io/tags/</loc>
+    <lastmod>2020-04-25T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://MahmoudZohdy.github.io/tags/vulnerability-research/</loc>
+    <lastmod>2020-04-25T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://MahmoudZohdy.github.io/tags/windows/</loc>
+    <lastmod>2020-04-25T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://MahmoudZohdy.github.io/categories/</loc>
   </url>
 </urlset>
