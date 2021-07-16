@@ -13,7 +13,8 @@
       <pubDate>Thu, 15 Jul 2021 19:57:14 +0200</pubDate>
       
       <guid>https://MahmoudZohdy.github.io/aboutme/</guid>
-      <description>#include &amp;lt;iostream&amp;gt;using namespace std; int main() { cout &amp;lt;&amp;lt; &amp;#34;Hello World!&amp;#34;; return 0; } </description>
+      <description>##Bio
+A security Enthuse who loves binary exploitation, low level development and windows internal, and i like to get my hands dirty digging deep into the technical details of both hardware and software of devices, to get a better understanding of how things work.</description>
     </item>
     
     <item>
@@ -22,7 +23,9 @@
       <pubDate>Thu, 15 Jul 2021 19:57:14 +0200</pubDate>
       
       <guid>https://MahmoudZohdy.github.io/explotation/</guid>
-      <description>post2
+      <description>post1
+post2
+post3
 #include &amp;lt;iostream&amp;gt;using namespace std; int main() { cout &amp;lt;&amp;lt; &amp;#34;Hello World!&amp;#34;; return 0; } </description>
     </item>
     
@@ -32,7 +35,9 @@
       <pubDate>Thu, 15 Jul 2021 19:57:14 +0200</pubDate>
       
       <guid>https://MahmoudZohdy.github.io/low-level-development/</guid>
-      <description>post3
+      <description>post1
+post2
+post3
 #include &amp;lt;iostream&amp;gt;using namespace std; int main() { cout &amp;lt;&amp;lt; &amp;#34;Hello World!&amp;#34;; return 0; } </description>
     </item>
     
@@ -60,7 +65,9 @@
       <pubDate>Thu, 15 Jul 2021 19:57:14 +0200</pubDate>
       
       <guid>https://MahmoudZohdy.github.io/re/</guid>
-      <description>post3
+      <description>post1
+post2
+post3
 #include &amp;lt;iostream&amp;gt;using namespace std; int main() { cout &amp;lt;&amp;lt; &amp;#34;Hello World!&amp;#34;; return 0; } </description>
     </item>
     
@@ -71,6 +78,8 @@
       
       <guid>https://MahmoudZohdy.github.io/wi/</guid>
       <description>post1
+post2
+post3
 #include &amp;lt;iostream&amp;gt;using namespace std; int main() { cout &amp;lt;&amp;lt; &amp;#34;Hello World!&amp;#34;; return 0; } </description>
     </item>
     
