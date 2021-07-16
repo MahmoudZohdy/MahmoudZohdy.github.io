@@ -6,15 +6,32 @@
     <description>Recent content in Drivers on In the love of breaking</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 25 Apr 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://MahmoudZohdy.github.io/tags/drivers/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 15 Jul 2021 19:57:14 +0200</lastBuildDate><atom:link href="https://MahmoudZohdy.github.io/tags/drivers/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>post2</title>
+      <link>https://MahmoudZohdy.github.io/posts/post2/</link>
+      <pubDate>Thu, 15 Jul 2021 19:57:14 +0200</pubDate>
+      
+      <guid>https://MahmoudZohdy.github.io/posts/post2/</guid>
+      <description>#include &amp;lt;iostream&amp;gt;using namespace std; int main() { cout &amp;lt;&amp;lt; &amp;#34;Hello World!&amp;#34;; return 0; } </description>
+    </item>
+    
+    <item>
+      <title>post3</title>
+      <link>https://MahmoudZohdy.github.io/posts/post3/</link>
+      <pubDate>Thu, 15 Jul 2021 19:57:14 +0200</pubDate>
+      
+      <guid>https://MahmoudZohdy.github.io/posts/post3/</guid>
+      <description>#include &amp;lt;iostream&amp;gt;using namespace std; int main() { cout &amp;lt;&amp;lt; &amp;#34;Hello World!&amp;#34;; return 0; } </description>
+    </item>
+    
     <item>
       <title>post1</title>
       <link>https://MahmoudZohdy.github.io/posts/post1/</link>
       <pubDate>Sat, 25 Apr 2020 00:00:00 +0000</pubDate>
       
       <guid>https://MahmoudZohdy.github.io/posts/post1/</guid>
-      <description>Background I&amp;rsquo;ve been focusing, really since the end of January, on working through the FuzzySecurity exploit development tutorials on the HackSysExtremeVulnerableDriver to try and learn some more about Windows kernel exploitation and have really enjoyed my time a lot.
-During this time, @ihack4falafel released some proof-of-concept exploits[1][2] against several Windows kernel-mode drivers. The takeaway from these write-ups, for me, was that 3rd party drivers that are responsible for overclocking, RGB light-management, hardware diagnostics are largely broken.</description>
+      <description>#include &amp;lt;iostream&amp;gt;using namespace std; int main() { cout &amp;lt;&amp;lt; &amp;#34;Hello World!&amp;#34;; return 0; } </description>
     </item>
     
   </channel>
