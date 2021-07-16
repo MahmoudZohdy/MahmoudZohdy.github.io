@@ -22,7 +22,7 @@
       <pubDate>Thu, 15 Jul 2021 19:57:14 +0200</pubDate>
       
       <guid>https://MahmoudZohdy.github.io/explotation/</guid>
-      <description>CVE-2020-12138 Exploit Proof-of-Concept, Privilege Escalation in ATI Technologies Inc. Driver atillk64.sys
+      <description>post2
 #include &amp;lt;iostream&amp;gt;using namespace std; int main() { cout &amp;lt;&amp;lt; &amp;#34;Hello World!&amp;#34;; return 0; } </description>
     </item>
     
@@ -32,7 +32,7 @@
       <pubDate>Thu, 15 Jul 2021 19:57:14 +0200</pubDate>
       
       <guid>https://MahmoudZohdy.github.io/low-level-development/</guid>
-      <description>CVE-2020-12138 Exploit Proof-of-Concept, Privilege Escalation in ATI Technologies Inc. Driver atillk64.sys
+      <description>post3
 #include &amp;lt;iostream&amp;gt;using namespace std; int main() { cout &amp;lt;&amp;lt; &amp;#34;Hello World!&amp;#34;; return 0; } </description>
     </item>
     
@@ -60,7 +60,7 @@
       <pubDate>Thu, 15 Jul 2021 19:57:14 +0200</pubDate>
       
       <guid>https://MahmoudZohdy.github.io/re/</guid>
-      <description>CVE-2020-12138 Exploit Proof-of-Concept, Privilege Escalation in ATI Technologies Inc. Driver atillk64.sys
+      <description>post3
 #include &amp;lt;iostream&amp;gt;using namespace std; int main() { cout &amp;lt;&amp;lt; &amp;#34;Hello World!&amp;#34;; return 0; } </description>
     </item>
     
@@ -70,7 +70,7 @@
       <pubDate>Thu, 15 Jul 2021 19:57:14 +0200</pubDate>
       
       <guid>https://MahmoudZohdy.github.io/wi/</guid>
-      <description>CVE-2020-12138 Exploit Proof-of-Concept, Privilege Escalation in ATI Technologies Inc. Driver atillk64.sys
+      <description>post1
 #include &amp;lt;iostream&amp;gt;using namespace std; int main() { cout &amp;lt;&amp;lt; &amp;#34;Hello World!&amp;#34;; return 0; } </description>
     </item>
     
