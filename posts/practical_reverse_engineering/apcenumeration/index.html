@@ -118,19 +118,19 @@ So I started Reverse Engineering Some of the APC related functions, creating win
       <p>In this Blog I will explain my approach for solving one of the exercises from <strong>Practical Reverse Engineering Book</strong>, which is enumerating kernel/user Asynchronous Procedure Calls (APC) of a process.</p>
 <p>So I started Reverse Engineering Some of the APC related functions, creating windows kernel driver that uses APC in different situation and use Windbg to add breakpoint on the APC callback functions to see how it is dispatched, plus Reading lots of blogs and documentation on how APC is working and how it is dispatched</p>
 <h1 id="apc-internal">APC Internal:</h1>
-<p>Now i will give a short introduction for APC and its internal from kernel mode perspective.</p>
+<p>Now I will give a short introduction for APC and its internal from kernel mode perspective.</p>
 <p>Basically, APCs allow user programs and system components to execute code in the context of a particular thread and, therefore, within the address space of a particular process.</p>
-<p>the windows kernel uses APC to complete I/O operations initiated asynchronously, thread suspension,&hellip; and it is used by malware auther for injecting code inside other process (APC Injection <a href="https://github.com/MahmoudZohdy/Process-Injection-Techniques">1</a>, <a href="https://github.com/MahmoudZohdy/APICallProxy/tree/main/APICallProxy/APCInjection">2</a>).</p>
-<p>there is two types of APC user-mode and kernel-mode APC, user-mode APC execute in user space in the target thread&rsquo;s process context and it requires that the target thread to be in an alertable wait state for being successfully delivered, kernel-APC execute in kernel space and can be classified as regular or special, both kernel/User APC has three functions:</p>
+<p>the windows kernel uses APC to complete I/O operations initiated asynchronously, thread suspension,&hellip; and it is used by malware author for injecting code inside other process (APC Injection <a href="https://github.com/MahmoudZohdy/Process-Injection-Techniques">1</a>, <a href="https://github.com/MahmoudZohdy/APICallProxy/tree/main/APICallProxy/APCInjection">2</a>).</p>
+<p>there is two types of APC user-mode and kernel-mode APC, user-mode APC execute in user space in the target thread&rsquo;s process context and it requires that the target thread to be in an alterable wait state for being successfully delivered, kernel-APC execute in kernel space and can be classified as regular or special, both kernel/User APC has three functions:</p>
 <ul>
 <li>
-<p>KernelRoutine: this function will be executed in kernel space (at IRQL= PASSIVE_LEVEL in case normal kernel APC and user APC, and at IRQL = APC_LEVEL in case spesial kernel APC)</p>
+<p>KernelRoutine: this function will be executed in kernel space (at IRQL= PASSIVE_LEVEL in case normal kernel APC and user APC, and at IRQL = APC_LEVEL in case special kernel APC)</p>
 </li>
 <li>
-<p>RundownRoutine: this function will be called in the kernel space in case the thread is terminated before delivering the APC .</p>
+<p>RundownRoutine: this function will be called in the kernel space in case the thread is terminated before delivering the APC.</p>
 </li>
 <li>
-<p>NormalRoutine: this function will be called in kernel space in case kernel-mode APC, and will be called in user space in case user-mode apc</p>
+<p>NormalRoutine: this function will be called in kernel space in case kernel-mode APC, and will be called in user space in case user-mode APC</p>
 </li>
 </ul>
 <p>Each Thread has two members of type _KAPC_STATE, named ApcState and SavedApcState in its _KTHREAD Data structure:</p>
@@ -188,8 +188,8 @@ So I started Reverse Engineering Some of the APC related functions, creating win
 <h3 id="first-approach">First Approach</h3>
 </li>
 </ul>
-<p>The first idea i thought of to start enumerating APC queues for all thread inside a process, is by parsing the process thread list from _KPROCESS structure the target member is ThreadListHead _LIST_ENTRY structure, then on each thread i prase the _KTHREAD structure to start to get ApcState _KAPC_STATE structure then parse the kernel-APC and user-APC.</p>
-<p>the problem with this approch is that it is based on parsing undocumented structure like _KPROCESS and _KTHREAD structure to get to the required member elment, and those structure changes with diffrent version of windows and even on diffrent build number.</p>
+<p>The first idea i thought of to start enumerating APC queues for all thread inside a process, is by parsing the process thread list from _KPROCESS structure the target member is ThreadListHead _LIST_ENTRY structure, then on each thread I parse the _KTHREAD structure to start to get ApcState _KAPC_STATE structure then parses the kernel-APC and user-APC.</p>
+<p>the problem with this approach is that it is based on parsing undocumented structure like _KPROCESS and _KTHREAD structure to get to the required member element, and those structure changes with different version of windows and even on different build number.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#ae81ff">0</span><span style="color:#f92672">:</span> kd<span style="color:#f92672">&gt;</span> dt nt<span style="color:#f92672">!</span>_KPROCESS
 </span></span><span style="display:flex;"><span>   <span style="color:#f92672">+</span><span style="color:#ae81ff">0x000</span> Header           : _DISPATCHER_HEADER
 </span></span><span style="display:flex;"><span>   <span style="color:#f92672">+</span><span style="color:#ae81ff">0x018</span> ProfileListHead  : _LIST_ENTRY
@@ -207,17 +207,17 @@ So I started Reverse Engineering Some of the APC related functions, creating win
 <h3 id="second-approach">Second Approach</h3>
 </li>
 </ul>
-<p>The first approach was not sutable soloution for me as it might lead to <em><strong>system crash</strong></em>, and i wanted to make an implementation that will be stable on all vesrion of windwos.</p>
+<p>The first approach was not suitable solution for me as it might lead to <em><strong>system crash</strong></em>, and i wanted to make an implementation that will be stable on all version of windows.</p>
 <p>What I thought of is that when you initialize an APC using <em><strong>KeInitializeApc</strong></em> then queue it using <em><strong>KeInsertQueueApc</strong></em> the APC structure will be inserted inside the appropriate queue (Kernel/User APC queue) so why don&rsquo;t I just initialize and insert my own APC then use this APC structure that I inserted to traverse the entire queue, So after some experimenting and checking how the Kernel/user APCs are dispatched and checking all the problems that i will face to enumerate Kernel/User APCs queue i found the following:</p>
 <ol>
 <li>A thread might be created/terminated when enumerating APC will need to stop thread creation/termination in the process (at least the local created/terminated thread not the remote one)</li>
-<li>will need to get all threada ID in the target process in a stable and documented way.</li>
-<li>when traversing the APC queue it might be accessed at the same time (for queuing APC or dispatching it) which might lead to crash or inaccurate result.</li>
+<li>will need to get all threads ID in the target process in a stable and documented way.</li>
+<li>when traversing the APC queue, it might be accessed at the same time (for queuing APC or dispatching it) which might lead to crash or inaccurate result.</li>
 <li>will need a valid user-mode address for the NormalRoutine in the user-mode APC otherwise the target process might crash.</li>
 </ol>
 <p>So I will try to solve those issue each one at a time, the first issue is that a thread might be created/ terminated during our enumeration process, to solve it i decided to suspend the process before the APC enumeration then Resume it after finishing using the <em><strong>NtSuspendProcess</strong></em> and <em><strong>NtResumeProcess</strong></em> API .</p>
 <p>the Second issue is that I will need to get all the threads ID in the target process, to do that there is two solution: the first is to use <em><strong>ZwQuerySystemInformation</strong></em> from the kernel with <em><strong>SystemProcessInformation</strong></em> as the SystemInformationClass argument, the second one is enumerating it from user mode using documented Method from windows (<em><strong>CreateToolhelp32Snapshot</strong></em> -&gt; <em><strong>Thread32First</strong></em> -&gt; <em><strong>Thread32Next</strong></em>)</p>
-<p>so i decieded use the second method which is enumerating thread ID from user-mode process</p>
+<p>so i decided  use the second method which is enumerating thread ID from user-mode process</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span> hThreadSnap <span style="color:#f92672">=</span> CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD, <span style="color:#ae81ff">0</span>);
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (hThreadSnap <span style="color:#f92672">==</span> INVALID_HANDLE_VALUE)
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span>(FALSE);
@@ -331,10 +331,10 @@ So I started Reverse Engineering Some of the APC related functions, creating win
 </span></span><span style="display:flex;"><span>	<span style="color:#75715e">//terminate itself
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	PsTerminateSystemThread(STATUS_SUCCESS);
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>the last issue that i will need to solve before writing the final code is that i will need a valid user-mode address to the user-mode APC (any user-mode address will work but if it not valid it will crash the target process), so i will need to parse normal windows API to use as <strong>NormalRoutine</strong> in user-mode APC, so insted of parsing the API address in the kernel mode (no easy way to do it) i will let the user-mode part of my code use windows API <em><strong>GetProcAddress</strong></em> to get the API i will use <em><strong>LoadLibraryA</strong></em> API in my case.</p>
+</span></span></code></pre></div><p>the last issue that i will need to solve before writing the final code is that i will need a valid user-mode address to the user-mode APC (any user-mode address will work but if it not valid it will crash the target process), so i will need to parse normal windows API to use as <strong>NormalRoutine</strong> in user-mode APC, so instead of parsing the API address in the kernel mode (no easy way to do it) i will let the user-mode part of my code use windows API <em><strong>GetProcAddress</strong></em> to get the API i will use <em><strong>LoadLibraryA</strong></em> API in my case.</p>
 <h1 id="apc-enumeration-testing">APC Enumeration Testing:</h1>
 <p>Now I am ready to test my Approach and see if it will face any issue, the complete code can be found on my GitHub ( <a href="https://github.com/MahmoudZohdy/Practical_Reverse_Engineering/tree/main/APCEnumeration">https://github.com/MahmoudZohdy/Practical_Reverse_Engineering/tree/main/APCEnumeration</a> ).</p>
-<p>It worked just fine, although there is an issue that I parse the APC list head as KAPC structure (I can not thik of a way to distinguish the APC that it is queued and the APC list head)</p>
+<p>It worked just fine, although there is an issue that I parse the APC list head as KAPC structure (I cannot think of a way to distinguish the APC that it is queued and the APC list head)</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#ae81ff">00000007</span>	<span style="color:#ae81ff">1.72731602</span>	Attempting Hooking All CPUs Except the current processor	
 </span></span><span style="display:flex;"><span><span style="color:#ae81ff">0000000</span><span style="color:#ae81ff">8</span>	<span style="color:#ae81ff">1.72731876</span>	CPU <span style="color:#ae81ff">0</span> is beining hooked	
 </span></span><span style="display:flex;"><span><span style="color:#ae81ff">0000000</span><span style="color:#ae81ff">9</span>	<span style="color:#ae81ff">1.72758520</span>	APC Enumeration <span style="color:#66d9ef">for</span> TID: <span style="color:#ae81ff">7308</span>	
