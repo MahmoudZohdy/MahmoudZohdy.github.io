@@ -5,11 +5,12 @@
     <link>https://MahmoudZohdy.github.io/tags/</link>
     <description>Recent content in Tags on Security Blog</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language><atom:link href="https://MahmoudZohdy.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <language>en-us</language>
+    <lastBuildDate>Sat, 13 Aug 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://MahmoudZohdy.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>APC</title>
       <link>https://MahmoudZohdy.github.io/tags/apc/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <pubDate>Sat, 13 Aug 2022 00:00:00 +0000</pubDate>
       
       <guid>https://MahmoudZohdy.github.io/tags/apc/</guid>
       <description></description>
@@ -18,7 +19,7 @@
     <item>
       <title>Driver</title>
       <link>https://MahmoudZohdy.github.io/tags/driver/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <pubDate>Sat, 13 Aug 2022 00:00:00 +0000</pubDate>
       
       <guid>https://MahmoudZohdy.github.io/tags/driver/</guid>
       <description></description>
@@ -27,7 +28,7 @@
     <item>
       <title>Practical_Reverse_Engineering</title>
       <link>https://MahmoudZohdy.github.io/tags/practical_reverse_engineering/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <pubDate>Sat, 13 Aug 2022 00:00:00 +0000</pubDate>
       
       <guid>https://MahmoudZohdy.github.io/tags/practical_reverse_engineering/</guid>
       <description></description>
@@ -36,7 +37,7 @@
     <item>
       <title>Windows_Internal</title>
       <link>https://MahmoudZohdy.github.io/tags/windows_internal/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <pubDate>Sat, 13 Aug 2022 00:00:00 +0000</pubDate>
       
       <guid>https://MahmoudZohdy.github.io/tags/windows_internal/</guid>
       <description></description>

@@ -5,7 +5,36 @@
     <link>https://MahmoudZohdy.github.io/</link>
     <description>Recent content on Security Blog</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language><atom:link href="https://MahmoudZohdy.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <language>en-us</language>
+    <lastBuildDate>Sat, 13 Aug 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://MahmoudZohdy.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Asynchronous Procedure Calls (APC) Enumeration</title>
+      <link>https://MahmoudZohdy.github.io/posts/practical_reverse_engineering/apcenumeration/</link>
+      <pubDate>Sat, 13 Aug 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://MahmoudZohdy.github.io/posts/practical_reverse_engineering/apcenumeration/</guid>
+      <description>In this Blog I will explain my approach for solving one of the exercises from Practical Reverse Engineering Book, which is enumerating kernel/user Asynchronous Procedure Calls (APC) of a process.
+So I started Reverse Engineering Some of the APC related functions, creating windows kernel driver that uses APC in different situation and use Windbg to add breakpoint on the APC callback functions to see how it is dispatched, plus Reading lots of blogs and documentation on how APC is working and how it is dispatched</description>
+    </item>
+    
+    <item>
+      <title>Development</title>
+      <link>https://MahmoudZohdy.github.io/development/</link>
+      <pubDate>Sat, 13 Aug 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://MahmoudZohdy.github.io/development/</guid>
+      <description> Asynchronous Procedure Calls (APC) Enumeration </description>
+    </item>
+    
+    <item>
+      <title>Windows Internal</title>
+      <link>https://MahmoudZohdy.github.io/wi/</link>
+      <pubDate>Sat, 13 Aug 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://MahmoudZohdy.github.io/wi/</guid>
+      <description> Asynchronous Procedure Calls (APC) Enumeration </description>
+    </item>
+    
     <item>
       <title>About</title>
       <link>https://MahmoudZohdy.github.io/aboutme/</link>
@@ -22,16 +51,6 @@
       
       <guid>https://MahmoudZohdy.github.io/re/</guid>
       <description></description>
-    </item>
-    
-    <item>
-      <title>Asynchronous Procedure Calls (APC) Enumeration</title>
-      <link>https://MahmoudZohdy.github.io/posts/practical_reverse_engineering/apcenumeration/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://MahmoudZohdy.github.io/posts/practical_reverse_engineering/apcenumeration/</guid>
-      <description>In this Blog I will explain my approach for solving one of the exercises from Practical Reverse Engineering Book, which is enumerating kernel/user Asynchronous Procedure Calls (APC) of a process.
-So I started Reverse Engineering Some of the APC related functions, creating windows kernel driver that uses APC in different situation and use Windbg to add breakpoint on the APC callback functions to see how it is dispatched, plus Reading lots of blogs and documentation on how APC is working and how it is dispatched</description>
     </item>
     
   </channel>
