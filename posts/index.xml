@@ -1,37 +1,19 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Posts on In the love of breaking</title>
+    <title>Posts on Security Blog</title>
     <link>https://MahmoudZohdy.github.io/posts/</link>
-    <description>Recent content in Posts on In the love of breaking</description>
+    <description>Recent content in Posts on Security Blog</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Thu, 15 Jul 2021 19:57:14 +0200</lastBuildDate><atom:link href="https://MahmoudZohdy.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <language>en-us</language><atom:link href="https://MahmoudZohdy.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>post2</title>
-      <link>https://MahmoudZohdy.github.io/posts/post2/</link>
-      <pubDate>Thu, 15 Jul 2021 19:57:14 +0200</pubDate>
+      <title>Asynchronous Procedure Calls (APC) Enumeration</title>
+      <link>https://MahmoudZohdy.github.io/posts/practical_reverse_engineering/apcenumeration/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://MahmoudZohdy.github.io/posts/post2/</guid>
-      <description>#include &amp;lt;iostream&amp;gt;using namespace std; int main() { cout &amp;lt;&amp;lt; &amp;#34;Hello World!&amp;#34;; return 0; } </description>
-    </item>
-    
-    <item>
-      <title>post3</title>
-      <link>https://MahmoudZohdy.github.io/posts/post3/</link>
-      <pubDate>Thu, 15 Jul 2021 19:57:14 +0200</pubDate>
-      
-      <guid>https://MahmoudZohdy.github.io/posts/post3/</guid>
-      <description>#include &amp;lt;iostream&amp;gt;using namespace std; int main() { cout &amp;lt;&amp;lt; &amp;#34;Hello World!&amp;#34;; return 0; } </description>
-    </item>
-    
-    <item>
-      <title>post1</title>
-      <link>https://MahmoudZohdy.github.io/posts/post1/</link>
-      <pubDate>Sat, 25 Apr 2020 00:00:00 +0000</pubDate>
-      
-      <guid>https://MahmoudZohdy.github.io/posts/post1/</guid>
-      <description>#include &amp;lt;iostream&amp;gt;using namespace std; int main() { cout &amp;lt;&amp;lt; &amp;#34;Hello World!&amp;#34;; return 0; } </description>
+      <guid>https://MahmoudZohdy.github.io/posts/practical_reverse_engineering/apcenumeration/</guid>
+      <description>In this Blog I will explain my approach for solving one of the exercises from Practical Reverse Engineering Book, which is enumerating kernel/user Asynchronous Procedure Calls (APC) of a process.
+So I started Reverse Engineering Some of the APC related functions, creating windows kernel driver that uses APC in different situation and use Windbg to add breakpoint on the APC callback functions to see how it is dispatched, plus Reading lots of blogs and documentation on how APC is working and how it is dispatched</description>
     </item>
     
   </channel>

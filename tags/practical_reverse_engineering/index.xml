@@ -1,29 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Security Blog</title>
-    <link>https://MahmoudZohdy.github.io/</link>
-    <description>Recent content on Security Blog</description>
+    <title>Practical_Reverse_Engineering on Security Blog</title>
+    <link>https://MahmoudZohdy.github.io/tags/practical_reverse_engineering/</link>
+    <description>Recent content in Practical_Reverse_Engineering on Security Blog</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language><atom:link href="https://MahmoudZohdy.github.io/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>About</title>
-      <link>https://MahmoudZohdy.github.io/aboutme/</link>
-      <pubDate>Thu, 15 Jul 2021 19:57:14 +0200</pubDate>
-      
-      <guid>https://MahmoudZohdy.github.io/aboutme/</guid>
-      <description>Bio A security Enthuse who loves Reverse Engineering, low level development and windows internal, i like to get my hands dirty digging deep into the technical details of both hardware and software devices, to get a better understanding of how things work.</description>
-    </item>
-    
-    <item>
-      <title>Reverse Engineering</title>
-      <link>https://MahmoudZohdy.github.io/re/</link>
-      <pubDate>Thu, 15 Jul 2021 19:57:14 +0200</pubDate>
-      
-      <guid>https://MahmoudZohdy.github.io/re/</guid>
-      <description></description>
-    </item>
-    
+    <language>en-us</language><atom:link href="https://MahmoudZohdy.github.io/tags/practical_reverse_engineering/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Asynchronous Procedure Calls (APC) Enumeration</title>
       <link>https://MahmoudZohdy.github.io/posts/practical_reverse_engineering/apcenumeration/</link>
