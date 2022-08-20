@@ -6,7 +6,26 @@
     <description>Recent content on Security Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 13 Aug 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://MahmoudZohdy.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 20 Aug 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://MahmoudZohdy.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Development</title>
+      <link>https://MahmoudZohdy.github.io/development/</link>
+      <pubDate>Sat, 20 Aug 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://MahmoudZohdy.github.io/development/</guid>
+      <description> Asynchronous Procedure Calls (APC) Enumeration Loaded Drivers Enumeration </description>
+    </item>
+    
+    <item>
+      <title>Loaded Drivers Enumeration</title>
+      <link>https://MahmoudZohdy.github.io/posts/practical_reverse_engineering/enumerate_loaded_drivers_every_10sec/</link>
+      <pubDate>Sat, 20 Aug 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://MahmoudZohdy.github.io/posts/practical_reverse_engineering/enumerate_loaded_drivers_every_10sec/</guid>
+      <description>In this Blog I will explain my approach for solving one of the exercises from Practical Reverse Engineering Book, which is enumerating the loaded module list every 10 minutes.
+So after searching for the method to get all loaded Drivers on the system, I found there is an easy way you can to do it from user-mode (1) but I to do it using kernel mode driver and I want it to be stable on all windows versions.</description>
+    </item>
+    
     <item>
       <title>Asynchronous Procedure Calls (APC) Enumeration</title>
       <link>https://MahmoudZohdy.github.io/posts/practical_reverse_engineering/apcenumeration/</link>
@@ -18,21 +37,12 @@ So I started Reverse Engineering Some of the APC related functions, creating win
     </item>
     
     <item>
-      <title>Development</title>
-      <link>https://MahmoudZohdy.github.io/development/</link>
-      <pubDate>Sat, 13 Aug 2022 00:00:00 +0000</pubDate>
-      
-      <guid>https://MahmoudZohdy.github.io/development/</guid>
-      <description> Asynchronous Procedure Calls (APC) Enumeration </description>
-    </item>
-    
-    <item>
       <title>Windows Internal</title>
       <link>https://MahmoudZohdy.github.io/wi/</link>
       <pubDate>Sat, 13 Aug 2022 00:00:00 +0000</pubDate>
       
       <guid>https://MahmoudZohdy.github.io/wi/</guid>
-      <description> Asynchronous Procedure Calls (APC) Enumeration </description>
+      <description> Asynchronous Procedure Calls (APC) Enumeration Loaded Drivers Enumeration </description>
     </item>
     
     <item>

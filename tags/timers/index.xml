@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Timers on Security Blog</title>
+    <link>https://MahmoudZohdy.github.io/tags/timers/</link>
+    <description>Recent content in Timers on Security Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 20 Aug 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://MahmoudZohdy.github.io/tags/timers/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Loaded Drivers Enumeration</title>
+      <link>https://MahmoudZohdy.github.io/posts/practical_reverse_engineering/enumerate_loaded_drivers_every_10sec/</link>
+      <pubDate>Sat, 20 Aug 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://MahmoudZohdy.github.io/posts/practical_reverse_engineering/enumerate_loaded_drivers_every_10sec/</guid>
+      <description>In this Blog I will explain my approach for solving one of the exercises from Practical Reverse Engineering Book, which is enumerating the loaded module list every 10 minutes.
+So after searching for the method to get all loaded Drivers on the system, I found there is an easy way you can to do it from user-mode (1) but I to do it using kernel mode driver and I want it to be stable on all windows versions.</description>
+    </item>
+    
+  </channel>
+</rss>
