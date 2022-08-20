@@ -100,7 +100,7 @@ So after searching for the method to get all loaded Drivers on the system, I fou
   <title>clock</title>
   <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
 </svg>
-          2 min read
+          3 min read
         </div>
         <div>
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tag">
@@ -118,7 +118,7 @@ So after searching for the method to get all loaded Drivers on the system, I fou
     <div class="post-content">
       <p>In this Blog I will explain my approach for solving one of the exercises from <strong>Practical Reverse Engineering Book</strong>, which is enumerating the loaded module list every 10 minutes.</p>
 <p>So after searching for the method to get all loaded Drivers on the system, I found there is an easy way you can to do it from user-mode (<a href="https://docs.microsoft.com/en-us/windows/win32/psapi/enumerating-all-device-drivers-in-the-system">1</a>) but I to do it using kernel mode driver and I want it to be stable on all windows versions. After searching for a while, I found there is a List in the Kernel space called _<strong>RTL_PROCESS_MODULES</strong> contain all loaded Drivers on the System. similar to the _<strong>PEB_LDR_DATA</strong> List present in each process describing Loaded DLL.</p>
-<p>the _<strong>RTL_PROCESS_MODULES</strong> list exist in the undocumented valuable <strong>DriverSection</strong> in the <strong>DriverObject</strong> structure, I tried this technique and it worked on 0x64 bit version of windows but crashed on the 0x86 bit version (probably my definition was not very accurate on the 0x86 bit version), then I remembered there is a windows API <strong>ZwQuerySystemInformation</strong> and that it can get lots of information like running process, loaded Drivers,..etc so I used this technique and tested on different version of windows and it worked normally (<a href="https://github.com/MahmoudZohdy/Practical_Reverse_Engineering/tree/main/Timer/Loaded_Driver_Enumeration">GitHub</a>)</p>
+<p>the _<strong>RTL_PROCESS_MODULES</strong> list exist in the undocumented valuable <strong>DriverSection</strong> in the <strong>DriverObject</strong> structure, I tried this technique and it worked on 0x64 bit version of windows but crashed on the 0x86 bit version (probably my definition was not very accurate on the 0x86 bit version), then I remembered there is a windows API <strong>ZwQuerySystemInformation</strong> and that it can get lots of information like running process, loaded Drivers,..etc so I used this technique, in the Driver Entry point I initialized a DPC and created a timer that will be triggered every 10 min and execute the DPC function, then in the DPC I used the <strong>ZwQuerySystemInformation</strong> to enumerate the loaded Drivers. I tested on different version of windows, and it worked normally (<a href="https://github.com/MahmoudZohdy/Practical_Reverse_Engineering/tree/main/Timer/Loaded_Driver_Enumeration">GitHub</a>)</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">_RTL_PROCESS_MODULE_INFORMATION</span>
 </span></span><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>    HANDLE Section;
@@ -166,6 +166,41 @@ So after searching for the method to get all loaded Drivers on the system, I fou
 </span></span><span style="display:flex;"><span>   <span style="color:#f92672">+</span><span style="color:#ae81ff">0x040</span> EntryInProgress  : Ptr64 Void
 </span></span><span style="display:flex;"><span>   <span style="color:#f92672">+</span><span style="color:#ae81ff">0x048</span> ShutdownInProgress : UChar
 </span></span><span style="display:flex;"><span>   <span style="color:#f92672">+</span><span style="color:#ae81ff">0x050</span> ShutdownThreadId : Ptr64 Void
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>VOID
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">EnumerateLoadedDriverDPC</span>(
+</span></span><span style="display:flex;"><span>    PKDPC,
+</span></span><span style="display:flex;"><span>    PVOID,
+</span></span><span style="display:flex;"><span>    PVOID,
+</span></span><span style="display:flex;"><span>    PVOID
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    ULONG BufferSize <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>    NTSTATUS Status <span style="color:#f92672">=</span> STATUS_SUCCESS;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    Status <span style="color:#f92672">=</span> ZwQuerySystemInformation(SystemModuleInformation, NULL, <span style="color:#ae81ff">0</span>, <span style="color:#f92672">&amp;</span>BufferSize);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    RTL_PROCESS_MODULES<span style="color:#f92672">*</span> InformationData <span style="color:#f92672">=</span> (RTL_PROCESS_MODULES<span style="color:#f92672">*</span>)ExAllocatePool(NonPagedPool, BufferSize);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>InformationData) {
+</span></span><span style="display:flex;"><span>        DbgPrint(<span style="color:#e6db74">&#34;Driver Failed to Allocate memory</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74"> &#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    RtlZeroMemory(InformationData, BufferSize);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    Status <span style="color:#f92672">=</span> ZwQuerySystemInformation(SystemModuleInformation, InformationData, BufferSize, <span style="color:#f92672">&amp;</span>BufferSize);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>NT_SUCCESS(Status)) {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        DbgPrint(<span style="color:#e6db74">&#34;ZwQuerySystemInformation Failed Error Code %x</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, Status);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    DbgPrint(<span style="color:#e6db74">&#34;Start Enumerating Loaded Drivers</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> (ULONG i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> InformationData<span style="color:#f92672">-&gt;</span>NumberOfModules; i<span style="color:#f92672">++</span>) {
+</span></span><span style="display:flex;"><span>        DbgPrint(<span style="color:#e6db74">&#34;Driver %s at Base Address %p </span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, InformationData<span style="color:#f92672">-&gt;</span>Modules[i].FullPathName, InformationData<span style="color:#f92672">-&gt;</span>Modules[i].ImageBase);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div>
     </div>
     <div class="post-footer">
