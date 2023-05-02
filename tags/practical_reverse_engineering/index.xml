@@ -27,15 +27,5 @@ So after searching for the method to get all loaded Drivers on the system, I fou
 So I started Reverse Engineering Some of the APC related functions, creating windows kernel driver that uses APC in different situation and use Windbg to add breakpoint on the APC callback functions to see how it is dispatched, plus Reading lots of blogs and documentation on how APC is working and how it is dispatched</description>
     </item>
     
-    <item>
-      <title>Asynchronous Procedure Calls (APC) Enumeration</title>
-      <link>https://MahmoudZohdy.github.io/posts/test/</link>
-      <pubDate>Sat, 13 Aug 2022 00:00:00 +0000</pubDate>
-      
-      <guid>https://MahmoudZohdy.github.io/posts/test/</guid>
-      <description>In this Blog I will explain my approach for solving one of the exercises from Practical Reverse Engineering Book, which is enumerating kernel/user Asynchronous Procedure Calls (APC) of a process.
-So I started Reverse Engineering Some of the APC related functions, creating windows kernel driver that uses APC in different situation and use Windbg to add breakpoint on the APC callback functions to see how it is dispatched, plus Reading lots of blogs and documentation on how APC is working and how it is dispatched</description>
-    </item>
-    
   </channel>
 </rss>
