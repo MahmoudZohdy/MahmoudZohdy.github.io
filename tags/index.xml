@@ -6,13 +6,31 @@
     <description>Recent content in Tags on Security Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 20 Aug 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://MahmoudZohdy.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 02 May 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://MahmoudZohdy.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>BlackCat</title>
+      <link>https://MahmoudZohdy.github.io/tags/blackcat/</link>
+      <pubDate>Tue, 02 May 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://MahmoudZohdy.github.io/tags/blackcat/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>Driver</title>
       <link>https://MahmoudZohdy.github.io/tags/driver/</link>
-      <pubDate>Sat, 20 Aug 2022 00:00:00 +0000</pubDate>
+      <pubDate>Tue, 02 May 2023 00:00:00 +0000</pubDate>
       
       <guid>https://MahmoudZohdy.github.io/tags/driver/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Reverse_Engineering</title>
+      <link>https://MahmoudZohdy.github.io/tags/reverse_engineering/</link>
+      <pubDate>Tue, 02 May 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://MahmoudZohdy.github.io/tags/reverse_engineering/</guid>
       <description></description>
     </item>
     

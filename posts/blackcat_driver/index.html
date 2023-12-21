@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <title>New BlackCat Driver Reverse Engineering // Security Blog</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.101.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="Mahmoud Zohdy" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="https://MahmoudZohdy.github.io/css/main.min.4a7ec8660f9a44b08c4da97c5f2e31b1192df1d4d0322e65c0dbbc6ecb1b863f.css" />
+
+    
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="New BlackCat Driver Reverse Engineering"/>
+<meta name="twitter:description" content="In this Blog I will explain my approach for solving one of the exercises from Practical Reverse Engineering Book, which is enumerating kernel/user Asynchronous Procedure Calls (APC) of a process.
+So I started Reverse Engineering Some of the APC related functions, creating windows kernel driver that uses APC in different situation and use Windbg to add breakpoint on the APC callback functions to see how it is dispatched, plus Reading lots of blogs and documentation on how APC is working and how it is dispatched"/>
+
+    <meta property="og:title" content="New BlackCat Driver Reverse Engineering" />
+<meta property="og:description" content="In this Blog I will explain my approach for solving one of the exercises from Practical Reverse Engineering Book, which is enumerating kernel/user Asynchronous Procedure Calls (APC) of a process.
+So I started Reverse Engineering Some of the APC related functions, creating windows kernel driver that uses APC in different situation and use Windbg to add breakpoint on the APC callback functions to see how it is dispatched, plus Reading lots of blogs and documentation on how APC is working and how it is dispatched" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://MahmoudZohdy.github.io/posts/blackcat_driver/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-05-02T00:00:00+00:00" />
+<meta property="article:modified_time" content="2023-05-02T00:00:00+00:00" />
+
+
+
+  </head>
+  <body>
+    <header class="app-header">
+      <a href="https://MahmoudZohdy.github.io/"><img class="app-header-avatar" src="https://github.com/MahmoudZohdy/MahmoudZohdy.github.io/raw/main/doc/images/image.png" alt="Mahmoud Zohdy" /></a>
+      <h1>Security Blog</h1>
+      <nav class="app-header-menu">
+          <a class="app-header-menu-item" href="/">Home</a>
+            <br>
+          
+          <a class="app-header-menu-item" href="/tags/">Tags</a>
+            <br>
+          
+          <a class="app-header-menu-item" href="/aboutme/">About</a>
+            <br>
+          
+          <a class="app-header-menu-item" href="/development/">Development</a>
+            <br>
+          
+          <a class="app-header-menu-item" href="/re/">Reverse Engineering</a>
+            <br>
+          
+          <a class="app-header-menu-item" href="/wi/">Windows internal</a>
+      </nav>
+      <p>Security Research, Windows Internal, Reverse Engineering, Windows Kernel/System Developer</p>
+      <div class="app-header-social">
+        
+          <a href="https://github.com/MahmoudZohdy" target="_blank" rel="noreferrer noopener">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-github">
+  <title>My Github</title>
+  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+</svg>
+          </a>
+        
+          <a href="https://www.linkedin.com/in/mahmoud-zohdy-519328124/" target="_blank" rel="noreferrer noopener">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-linkedin">
+  <title>My linkedin</title>
+  <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle>
+</svg>
+          </a>
+        
+          <a href="https://twitter.com/7odaZohdy" target="_blank" rel="noreferrer noopener">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-twitter">
+  <title>My twitter</title>
+  <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+</svg>
+          </a>
+        
+          <a href="mailto:abdelaziz.zohdy@gmail.com" target="_blank" rel="noreferrer noopener">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-link">
+  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+</svg>
+          </a>
+        
+      </div>
+    </header>
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">New BlackCat Driver Reverse Engineering</h1>
+      <div class="post-meta">
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
+  <title>calendar</title>
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
+</svg>
+          May 2, 2023
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
+  <title>clock</title>
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+          10 min read
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tag">
+  <title>tag</title>
+  <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line>
+</svg>
+              <a class="tag" href="https://MahmoudZohdy.github.io/tags/blackcat/">BlackCat</a>
+              <a class="tag" href="https://MahmoudZohdy.github.io/tags/reverse_engineering/">Reverse_Engineering</a>
+              <a class="tag" href="https://MahmoudZohdy.github.io/tags/driver/">Driver</a>
+              <a class="tag" href="https://MahmoudZohdy.github.io/tags/">Tags</a>
+        </div>
+      </div>
+    </header>
+    <div class="post-content">
+      <p>In this Blog I will explain my approach for solving one of the exercises from <strong>Practical Reverse Engineering Book</strong>, which is enumerating kernel/user Asynchronous Procedure Calls (APC) of a process.</p>
+<p>So I started Reverse Engineering Some of the APC related functions, creating windows kernel driver that uses APC in different situation and use Windbg to add breakpoint on the APC callback functions to see how it is dispatched, plus Reading lots of blogs and documentation on how APC is working and how it is dispatched</p>
+<h1 id="apc-internal">APC Internal:</h1>
+<p>Now I will give a short introduction for APC and its internal from kernel mode perspective.</p>
+<p>Basically, APCs allow user programs and system components to execute code in the context of a particular thread and, therefore, within the address space of a particular process.</p>
+<p>the windows kernel uses APC to complete I/O operations initiated asynchronously, thread suspension,&hellip; and it is used by malware author for injecting code inside other process (APC Injection <a href="https://github.com/MahmoudZohdy/Process-Injection-Techniques">1</a>, <a href="https://github.com/MahmoudZohdy/APICallProxy/tree/main/APICallProxy/APCInjection">2</a>).</p>
+<p>there is two types of APC user-mode and kernel-mode APC, user-mode APC execute in user space in the target thread&rsquo;s process context and it requires that the target thread to be in an alterable wait state for being successfully delivered, kernel-APC execute in kernel space and can be classified as regular or special, both kernel/User APC has three functions:</p>
+<ul>
+<li>
+<p>KernelRoutine: this function will be executed in kernel space (at IRQL= PASSIVE_LEVEL in case normal kernel APC and user APC, and at IRQL = APC_LEVEL in case special kernel APC)</p>
+</li>
+<li>
+<p>RundownRoutine: this function will be called in the kernel space in case the thread is terminated before delivering the APC.</p>
+</li>
+<li>
+<p>NormalRoutine: this function will be called in kernel space in case kernel-mode APC, and will be called in user space in case user-mode APC</p>
+</li>
+</ul>
+<p>Each Thread has two members of type _KAPC_STATE, named ApcState and SavedApcState in its _KTHREAD Data structure:</p>
+<ul>
+<li>
+<p>ApcState: used regardless of whether the thread is attached to its own process or another process</p>
+</li>
+<li>
+<p>SavedApcState: used to store APCs for process context which is not the current context and that must wait (for example when a thread attaches to another process, and the APC is queued for its own process).</p>
+</li>
+</ul>
+<p>_KAPC_STATE structure has member called ApcListHead which is two LIST_ENTRY structure and treated as the list head for kernel-APC and user-APC, and will be used to queue APCs for a thread.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#ae81ff">1</span><span style="color:#f92672">:</span> kd<span style="color:#f92672">&gt;</span> dt nt<span style="color:#f92672">!</span>_KTHREAD
+</span></span><span style="display:flex;"><span>............ <span style="color:#75715e">//Truncated for visibility
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>   <span style="color:#f92672">+</span><span style="color:#ae81ff">0x098</span> ApcState         : _KAPC_STATE       <span style="color:#75715e">/*APCs that will be dispatched regarding the current process context*/</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">+</span><span style="color:#ae81ff">0x098</span> ApcStateFill     : [<span style="color:#ae81ff">43</span>] UChar
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">+</span><span style="color:#ae81ff">0x0c3</span> Priority         : Char
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">+</span><span style="color:#ae81ff">0x0c4</span> UserIdealProcessor : Uint4B
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">+</span><span style="color:#ae81ff">0x0c8</span> WaitStatus       : Int8B
+</span></span><span style="display:flex;"><span>............ <span style="color:#75715e">//Truncated for visibility
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>   <span style="color:#f92672">+</span><span style="color:#ae81ff">0x186</span> WaitIrql         : UChar
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">+</span><span style="color:#ae81ff">0x187</span> WaitMode         : Char
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">+</span><span style="color:#ae81ff">0x140</span> WaitBlockFill6   : [<span style="color:#ae81ff">116</span>] UChar
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">+</span><span style="color:#ae81ff">0x1b4</span> WaitTime         : Uint4B
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">+</span><span style="color:#ae81ff">0x140</span> WaitBlockFill7   : [<span style="color:#ae81ff">164</span>] UChar
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">+</span><span style="color:#ae81ff">0x1e4</span> KernelApcDisable : Int2B
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">+</span><span style="color:#ae81ff">0x1e6</span> SpecialApcDisable : Int2B
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">+</span><span style="color:#ae81ff">0x1e4</span> CombinedApcDisable : Uint4B
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">+</span><span style="color:#ae81ff">0x140</span> WaitBlockFill8   : [<span style="color:#ae81ff">40</span>] UChar
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">+</span><span style="color:#ae81ff">0x168</span> ThreadCounters   : Ptr64 _KTHREAD_COUNTERS
+</span></span><span style="display:flex;"><span>............ <span style="color:#75715e">//Truncated for visibility
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>   <span style="color:#f92672">+</span><span style="color:#ae81ff">0x240</span> AffinityFill     : [<span style="color:#ae81ff">10</span>] UChar
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">+</span><span style="color:#ae81ff">0x24a</span> ApcStateIndex    : UChar
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">+</span><span style="color:#ae81ff">0x24b</span> WaitBlockCount   : UChar
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">+</span><span style="color:#ae81ff">0x24c</span> IdealProcessor   : Uint4B
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">+</span><span style="color:#ae81ff">0x250</span> NpxState         : Uint8B
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">+</span><span style="color:#ae81ff">0x258</span> SavedApcState    : _KAPC_STATE        <span style="color:#75715e">/*APCs that will be saved as it can not be dispatched in the current context*/</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">+</span><span style="color:#ae81ff">0x258</span> SavedApcStateFill : [<span style="color:#ae81ff">43</span>] UChar
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">+</span><span style="color:#ae81ff">0x283</span> WaitReason       : UChar
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">+</span><span style="color:#ae81ff">0x284</span> SuspendCount     : Char
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">+</span><span style="color:#ae81ff">0x285</span> Saturation       : Char
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#ae81ff">1</span><span style="color:#f92672">:</span> kd<span style="color:#f92672">&gt;</span> dt nt<span style="color:#f92672">!</span>_KAPC_STATE
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">+</span><span style="color:#ae81ff">0x000</span> ApcListHead      : [<span style="color:#ae81ff">2</span>] _LIST_ENTRY      <span style="color:#75715e">/*Kernel\user APC queue list head*/</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">+</span><span style="color:#ae81ff">0x020</span> Process          : Ptr64 _KPROCESS
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">+</span><span style="color:#ae81ff">0x028</span> InProgressFlags  : UChar
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">+</span><span style="color:#ae81ff">0x028</span> KernelApcInProgress : Pos <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span> Bit
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">+</span><span style="color:#ae81ff">0x028</span> SpecialApcInProgress : Pos <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span> Bit
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">+</span><span style="color:#ae81ff">0x029</span> KernelApcPending : UChar
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">+</span><span style="color:#ae81ff">0x02a</span> UserApcPendingAll : UChar
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">+</span><span style="color:#ae81ff">0x02a</span> SpecialUserApcPending : Pos <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span> Bit
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">+</span><span style="color:#ae81ff">0x02a</span> UserApcPending   : Pos <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span> Bit
+</span></span></code></pre></div><h1 id="apc-enumeration">APC Enumeration:</h1>
+<ul>
+<li>
+<h3 id="first-approach">First Approach</h3>
+</li>
+</ul>
+<p>The first idea i thought of to start enumerating APC queues for all thread inside a process, is by parsing the process thread list from _KPROCESS structure the target member is ThreadListHead _LIST_ENTRY structure, then on each thread I parse the _KTHREAD structure to start to get ApcState _KAPC_STATE structure then parses the kernel-APC and user-APC.</p>
+<p>the problem with this approach is that it is based on parsing undocumented structure like _KPROCESS and _KTHREAD structure to get to the required member element, and those structure changes with different version of windows and even on different build number.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#ae81ff">0</span><span style="color:#f92672">:</span> kd<span style="color:#f92672">&gt;</span> dt nt<span style="color:#f92672">!</span>_KPROCESS
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">+</span><span style="color:#ae81ff">0x000</span> Header           : _DISPATCHER_HEADER
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">+</span><span style="color:#ae81ff">0x018</span> ProfileListHead  : _LIST_ENTRY
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">+</span><span style="color:#ae81ff">0x028</span> DirectoryTableBase : Uint8B
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">+</span><span style="color:#ae81ff">0x030</span> ThreadListHead   : _LIST_ENTRY        <span style="color:#75715e">/*process threads list head*/</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">+</span><span style="color:#ae81ff">0x040</span> ProcessLock      : Uint4B
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">+</span><span style="color:#ae81ff">0x044</span> ProcessTimerDelay : Uint4B
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">+</span><span style="color:#ae81ff">0x048</span> DeepFreezeStartTime : Uint8B
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">+</span><span style="color:#ae81ff">0x050</span> Affinity         : _KAFFINITY_EX
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">+</span><span style="color:#ae81ff">0x0f8</span> AffinityPadding  : [<span style="color:#ae81ff">12</span>] Uint8B
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">+</span><span style="color:#ae81ff">0x158</span> ReadyListHead    : _LIST_ENTRY
+</span></span><span style="display:flex;"><span>............ <span style="color:#75715e">//Truncated for visibility
+</span></span></span></code></pre></div><ul>
+<li>
+<h3 id="second-approach">Second Approach</h3>
+</li>
+</ul>
+<p>The first approach was not suitable solution for me as it might lead to <em><strong>system crash</strong></em>, and i wanted to make an implementation that will be stable on all version of windows.</p>
+<p>What I thought of is that when you initialize an APC using <em><strong>KeInitializeApc</strong></em> then queue it using <em><strong>KeInsertQueueApc</strong></em> the APC structure will be inserted inside the appropriate queue (Kernel/User APC queue) so why don&rsquo;t I just initialize and insert my own APC then use this APC structure that I inserted to traverse the entire queue, So after some experimenting and checking how the Kernel/user APCs are dispatched and checking all the problems that i will face to enumerate Kernel/User APCs queue i found the following:</p>
+<ol>
+<li>A thread might be created/terminated when enumerating APC will need to stop thread creation/termination in the process (at least the local created/terminated thread not the remote one)</li>
+<li>will need to get all threads ID in the target process in a stable and documented way.</li>
+<li>when traversing the APC queue, it might be accessed at the same time (for queuing APC or dispatching it) which might lead to crash or inaccurate result.</li>
+<li>will need a valid user-mode address for the NormalRoutine in the user-mode APC otherwise the target process might crash.</li>
+</ol>
+<p>So I will try to solve those issue each one at a time, the first issue is that a thread might be created/ terminated during our enumeration process, to solve it i decided to suspend the process before the APC enumeration then Resume it after finishing using the <em><strong>NtSuspendProcess</strong></em> and <em><strong>NtResumeProcess</strong></em> API .</p>
+<p>the Second issue is that I will need to get all the threads ID in the target process, to do that there is two solution: the first is to use <em><strong>ZwQuerySystemInformation</strong></em> from the kernel with <em><strong>SystemProcessInformation</strong></em> as the SystemInformationClass argument, the second one is enumerating it from user mode using documented Method from windows (<em><strong>CreateToolhelp32Snapshot</strong></em> -&gt; <em><strong>Thread32First</strong></em> -&gt; <em><strong>Thread32Next</strong></em>)</p>
+<p>so i decided  use the second method which is enumerating thread ID from user-mode process</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span> hThreadSnap <span style="color:#f92672">=</span> CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD, <span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (hThreadSnap <span style="color:#f92672">==</span> INVALID_HANDLE_VALUE)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span>(FALSE);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Fill in the size of the structure before using it. 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    te32.dwSize <span style="color:#f92672">=</span> <span style="color:#66d9ef">sizeof</span>(THREADENTRY32);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>Thread32First(hThreadSnap, <span style="color:#f92672">&amp;</span>te32)) {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//Error calling Thread32First
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        CloseHandle(hThreadSnap);     <span style="color:#75715e">// Must clean up the snapshot object!
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">return</span>(FALSE);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (te32.th32OwnerProcessID <span style="color:#f92672">==</span> dwOwnerPID)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            _tprintf(TEXT(<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">     THREAD ID      = 0x%08X&#34;</span>), te32.th32ThreadID);
+</span></span><span style="display:flex;"><span>            _tprintf(TEXT(<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">     base priority  = %d&#34;</span>), te32.tpBasePri);
+</span></span><span style="display:flex;"><span>            _tprintf(TEXT(<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">     delta priority = %d&#34;</span>), te32.tpDeltaPri);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            Threadarray[counter]<span style="color:#f92672">=</span> te32.th32ThreadID;    <span style="color:#75715e">// Move all Target process ID to global array to be passed to the Driver
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            counter<span style="color:#f92672">++</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    } <span style="color:#66d9ef">while</span> (Thread32Next(hThreadSnap, <span style="color:#f92672">&amp;</span>te32));
+</span></span></code></pre></div><p>the Third issue is that the APC list might be accessed at the same time of the APC enumeration which might lead to crash or inaccurate result, what I thought of at start is that there must be some type of <strong>synchronization</strong> that is being done by windows kernel to lock the list, So i start searching for this synchronization method and I faced the same issue as in my first approach which is that I will need to parse undocumented structure _<strong>KTHREAD</strong> for each thread (<a href="http://www.opening-windows.com/techart_windows_vista_apc_internals2.htm">1</a>) so the idea died from the start.</p>
+<p>my second approach I saw in the book <strong>rootkit arsenal</strong> it works by suspending all other CPU on the system by creating threads with the number on processor-1 and each thread raise the IRQL to <strong>DISPATCH_LEVEL</strong> then raise the IRQL on the current processor to <strong>DISPATCH_LEVEL</strong> also, this way i will not be interrupted by the windows kernel or any other driver, and as the APC is dispatched at <strong>APC_LEVEL</strong> or <strong>PASSIVE_LEVEL</strong> I will guarantee that the APC will not change during the APC enumeration.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>NTSTATUS <span style="color:#a6e22e">DeviceControl</span>(PDEVICE_OBJECT, PIRP Irp) {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>.................. <span style="color:#75715e">//Truncated for visibility
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    
+</span></span><span style="display:flex;"><span>        HookAllCPU();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">//Raise IRQL to DISPATCH_LEVEL on current proccessor,
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		KIRQL oldIrql <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> (DISPATCH_LEVEL <span style="color:#f92672">&gt;=</span> KeGetCurrentIrql()) {
+</span></span><span style="display:flex;"><span>			KeRaiseIrql(DISPATCH_LEVEL, <span style="color:#f92672">&amp;</span>oldIrql);
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">while</span> (ThreadIDArray[counter] <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span>) {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>			DbgPrint(<span style="color:#e6db74">&#34;APC Enumeration for TID: %d</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, ThreadIDArray[counter]);
+</span></span><span style="display:flex;"><span>			PETHREAD Ethread;
+</span></span><span style="display:flex;"><span>			NTSTATUS status <span style="color:#f92672">=</span> PsLookupThreadByThreadId((HANDLE)ThreadIDArray[counter], <span style="color:#f92672">&amp;</span>Ethread);
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">if</span> (NT_SUCCESS(status)) {
+</span></span><span style="display:flex;"><span>				DbgPrint(<span style="color:#e6db74">&#34;Start Enumerating Kernel APC</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+</span></span><span style="display:flex;"><span>				EnumerateKernelAPC(Ethread);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>				DbgPrint(<span style="color:#e6db74">&#34;Start Enumerating User APC</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+</span></span><span style="display:flex;"><span>				EnumerateNormalAPC(Ethread);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>				ObDereferenceObject(Ethread);
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>			counter<span style="color:#f92672">++</span>;
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">//lower the IRQL on current processor
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		KeLowerIrql(oldIrql);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">//Signal other threads on other processor to stop and release proseccor
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		InterlockedDecrement(<span style="color:#f92672">&amp;</span>ReleaseFlag);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">//loop until all other threads is stoped
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#66d9ef">while</span> (TotalCpuNumberHooked) {}
+</span></span><span style="display:flex;"><span>.................. <span style="color:#75715e">//Truncated for visibility
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>VOID <span style="color:#a6e22e">HookAllCPU</span>() {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	DbgPrint((<span style="color:#e6db74">&#34;Attempting Hooking All CPUs Except the current processor</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>));
+</span></span><span style="display:flex;"><span>	DWORD64 nProcessor <span style="color:#f92672">=</span> KeNumberProcessors;
+</span></span><span style="display:flex;"><span>	NumberOfCPUToHook <span style="color:#f92672">=</span> (LONG)nProcessor <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>	HANDLE ThreadHandel <span style="color:#f92672">=</span> NULL;
+</span></span><span style="display:flex;"><span>	OBJECT_ATTRIBUTES inizializedattributes;
+</span></span><span style="display:flex;"><span>	InitializeObjectAttributes(<span style="color:#f92672">&amp;</span>inizializedattributes, NULL, <span style="color:#ae81ff">0</span>, NULL, NULL);
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> nProcessor <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>; i<span style="color:#f92672">++</span>) {
+</span></span><span style="display:flex;"><span>		DbgPrint(<span style="color:#e6db74">&#34;CPU %d is beining hooked</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, i);
+</span></span><span style="display:flex;"><span>		PsCreateSystemThread(<span style="color:#f92672">&amp;</span>ThreadHandel, THREAD_ALL_ACCESS,
+</span></span><span style="display:flex;"><span>			NULL, NtCurrentProcess(), NULL,
+</span></span><span style="display:flex;"><span>			(PKSTART_ROUTINE)HookCPU, NULL);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">//Close The Handle
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		ZwClose(ThreadHandel);
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//loop untile the other CPU are Hooked
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">while</span> (NumberOfCPUToHook <span style="color:#f92672">!=</span> TotalCpuNumberHooked) {}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>VOID <span style="color:#a6e22e">HookCPU</span>(PVOID) {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//Raise IRQL
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	KIRQL oldIrql <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> (DISPATCH_LEVEL <span style="color:#f92672">&gt;=</span> KeGetCurrentIrql()) {
+</span></span><span style="display:flex;"><span>		KeRaiseIrql(DISPATCH_LEVEL, <span style="color:#f92672">&amp;</span>oldIrql);
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//NT_ASSERT(KeGetCurrentIrql() == DISPATCH_LEVEL);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>	InterlockedIncrement(<span style="color:#f92672">&amp;</span>TotalCpuNumberHooked);
+</span></span><span style="display:flex;"><span>	
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//Loop Untile Released, the release happen after the enumeration
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">while</span> (ReleaseFlag) {}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//Lower IRQL
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	KeLowerIrql(oldIrql);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	InterlockedDecrement(<span style="color:#f92672">&amp;</span>TotalCpuNumberHooked);
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//terminate itself
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	PsTerminateSystemThread(STATUS_SUCCESS);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>the last issue that i will need to solve before writing the final code is that i will need a valid user-mode address to the user-mode APC (any user-mode address will work but if it not valid it will crash the target process), so i will need to parse normal windows API to use as <strong>NormalRoutine</strong> in user-mode APC, so instead of parsing the API address in the kernel mode (no easy way to do it) i will let the user-mode part of my code use windows API <em><strong>GetProcAddress</strong></em> to get the API i will use <em><strong>LoadLibraryA</strong></em> API in my case.</p>
+<h1 id="apc-enumeration-testing">APC Enumeration Testing:</h1>
+<p>Now I am ready to test my Approach and see if it will face any issue, the complete code can be found on my GitHub ( <a href="https://github.com/MahmoudZohdy/Practical_Reverse_Engineering/tree/main/APCEnumeration">https://github.com/MahmoudZohdy/Practical_Reverse_Engineering/tree/main/APCEnumeration</a> ).</p>
+<p>It worked just fine, although there is an issue that I parse the APC list head as KAPC structure (I cannot think of a way to distinguish the APC that it is queued and the APC list head)</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#ae81ff">00000007</span>	<span style="color:#ae81ff">1.72731602</span>	Attempting Hooking All CPUs Except the current processor	
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">0000000</span><span style="color:#ae81ff">8</span>	<span style="color:#ae81ff">1.72731876</span>	CPU <span style="color:#ae81ff">0</span> is beining hooked	
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">0000000</span><span style="color:#ae81ff">9</span>	<span style="color:#ae81ff">1.72758520</span>	APC Enumeration <span style="color:#66d9ef">for</span> TID: <span style="color:#ae81ff">7308</span>	
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">00000010</span>	<span style="color:#ae81ff">1.72758675</span>	Start Enumerating Kernel APC	
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">00000011</span>	<span style="color:#ae81ff">1.72760320</span>	KernelRoutine: <span style="color:#ae81ff">0xFFFFF806203989F0</span>  RundownRoutine: <span style="color:#ae81ff">0xFFFFF806203989F0</span>  NormalRoutine: <span style="color:#ae81ff">0xFFFFF806202DCA00</span>	
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">00000012</span>	<span style="color:#ae81ff">1.72760475</span>	KernelRoutine: <span style="color:#ae81ff">0xFFFFCC8B3CB86128</span>  RundownRoutine: <span style="color:#ae81ff">0xFFFFCC8B3CB86128</span>  NormalRoutine: <span style="color:#ae81ff">0xFFFFCC8B3D744080</span>	
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">00000013</span>	<span style="color:#ae81ff">1.72760642</span>	KernelRoutine: <span style="color:#ae81ff">0xFFFFF806390B1000</span>  RundownRoutine: <span style="color:#ae81ff">0x0000000000000000</span>  NormalRoutine: <span style="color:#ae81ff">0x0000000000000000</span>	   <span style="color:#75715e">// my Kernel APC
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">00000014</span>	<span style="color:#ae81ff">1.72760701</span>	Start Enumerating User APC	
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">00000015</span>	<span style="color:#ae81ff">1.72761536</span>	KernelRoutine: <span style="color:#ae81ff">0xFFFFCC8B3D744080</span>  RundownRoutine: <span style="color:#ae81ff">0x0000000009000100</span>  NormalRoutine: <span style="color:#ae81ff">0x0000000000000100</span>	   <span style="color:#75715e">//  APC List Head, not valid function address   
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">00000016</span>	<span style="color:#ae81ff">1.72761679</span>	KernelRoutine: <span style="color:#ae81ff">0xFFFFF806390B1000</span>  RundownRoutine: <span style="color:#ae81ff">0x0000000000000000</span>  NormalRoutine: <span style="color:#ae81ff">0x00007FFE5AC604F0</span>     <span style="color:#75715e">//	LoadLibraryA address    
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">00000017</span>	<span style="color:#ae81ff">1.72761762</span>	APC Enumeration <span style="color:#66d9ef">for</span> TID: <span style="color:#ae81ff">7312</span>	
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">0000001</span><span style="color:#ae81ff">8</span>	<span style="color:#ae81ff">1.72761846</span>	Start Enumerating Kernel APC	
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">0000001</span><span style="color:#ae81ff">9</span>	<span style="color:#ae81ff">1.72762036</span>	KernelRoutine: <span style="color:#ae81ff">0xFFFFCC8B3D63B128</span>  RundownRoutine: <span style="color:#ae81ff">0xFFFFCC8B3D63B128</span>  NormalRoutine: <span style="color:#ae81ff">0xFFFFCC8B3D744080</span>	
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">00000020</span>	<span style="color:#ae81ff">1.72762203</span>	KernelRoutine: <span style="color:#ae81ff">0xFFFFF806390B1000</span>  RundownRoutine: <span style="color:#ae81ff">0x0000000000000000</span>  NormalRoutine: <span style="color:#ae81ff">0x0000000000000000</span>	
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">00000021</span>	<span style="color:#ae81ff">1.72762263</span>	Start Enumerating User APC	
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">00000022</span>	<span style="color:#ae81ff">1.72762883</span>	KernelRoutine: <span style="color:#ae81ff">0xFFFFCC8B3D744080</span>  RundownRoutine: <span style="color:#ae81ff">0x0000000108000101</span>  NormalRoutine: <span style="color:#ae81ff">0x0000000000000100</span>	
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">00000023</span>	<span style="color:#ae81ff">1.72763026</span>	KernelRoutine: <span style="color:#ae81ff">0xFFFFF806390B1000</span>  RundownRoutine: <span style="color:#ae81ff">0x0000000000000000</span>  NormalRoutine: <span style="color:#ae81ff">0x00007FFE5AC604F0</span>	
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">00000024</span>	<span style="color:#ae81ff">1.72763085</span>	APC Enumeration <span style="color:#66d9ef">for</span> TID: <span style="color:#ae81ff">7316</span>	
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">00000025</span>	<span style="color:#ae81ff">1.72763157</span>	Start Enumerating Kernel APC	
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">00000026</span>	<span style="color:#ae81ff">1.72763395</span>	KernelRoutine: <span style="color:#ae81ff">0xFFFFCC8B3D6D6128</span>  RundownRoutine: <span style="color:#ae81ff">0xFFFFCC8B3D6D6128</span>  NormalRoutine: <span style="color:#ae81ff">0xFFFFCC8B3D744080</span>	
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">00000027</span>	<span style="color:#ae81ff">1.72764325</span>	KernelRoutine: <span style="color:#ae81ff">0xFFFFF806390B1000</span>  RundownRoutine: <span style="color:#ae81ff">0x0000000000000000</span>  NormalRoutine: <span style="color:#ae81ff">0x0000000000000000</span>	
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">0000002</span><span style="color:#ae81ff">8</span>	<span style="color:#ae81ff">1.72764397</span>	Start Enumerating User APC	
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">0000002</span><span style="color:#ae81ff">9</span>	<span style="color:#ae81ff">1.72765243</span>	KernelRoutine: <span style="color:#ae81ff">0xFFFFCC8B3D744080</span>  RundownRoutine: <span style="color:#ae81ff">0x0000000008000101</span>  NormalRoutine: <span style="color:#ae81ff">0x0000000000000100</span>	
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">00000030</span>	<span style="color:#ae81ff">1.72765398</span>	KernelRoutine: <span style="color:#ae81ff">0xFFFFF806390B1000</span>  RundownRoutine: <span style="color:#ae81ff">0x0000000000000000</span>  NormalRoutine: <span style="color:#ae81ff">0x00007FFE5AC604F0</span>	
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">00000031</span>	<span style="color:#ae81ff">1.72765481</span>	APC Enumeration <span style="color:#66d9ef">for</span> TID: <span style="color:#ae81ff">7332</span>	
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">00000032</span>	<span style="color:#ae81ff">1.72765565</span>	Start Enumerating Kernel APC	
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">00000033</span>	<span style="color:#ae81ff">1.72765803</span>	KernelRoutine: <span style="color:#ae81ff">0xFFFFCC8B3D647128</span>  RundownRoutine: <span style="color:#ae81ff">0xFFFFCC8B3D647128</span>  NormalRoutine: <span style="color:#ae81ff">0xFFFFCC8B3D744080</span>	
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">00000034</span>	<span style="color:#ae81ff">1.72765923</span>	KernelRoutine: <span style="color:#ae81ff">0xFFFFF806390B1000</span>  RundownRoutine: <span style="color:#ae81ff">0x0000000000000000</span>  NormalRoutine: <span style="color:#ae81ff">0x0000000000000000</span>	
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">00000035</span>	<span style="color:#ae81ff">1.72765994</span>	Start Enumerating User APC	
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">00000036</span>	<span style="color:#ae81ff">1.72766721</span>	KernelRoutine: <span style="color:#ae81ff">0xFFFFCC8B3D744080</span>  RundownRoutine: <span style="color:#ae81ff">0x0000000108000101</span>  NormalRoutine: <span style="color:#ae81ff">0x0000000000000100</span>	
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">00000037</span>	<span style="color:#ae81ff">1.72766840</span>	KernelRoutine: <span style="color:#ae81ff">0xFFFFF806390B1000</span>  RundownRoutine: <span style="color:#ae81ff">0x0000000000000000</span>  NormalRoutine: <span style="color:#ae81ff">0x00007FFE5AC604F0</span>	
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">0000003</span><span style="color:#ae81ff">8</span>	<span style="color:#ae81ff">1.72766924</span>	APC Enumeration <span style="color:#66d9ef">for</span> TID: <span style="color:#ae81ff">7336</span>	
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">0000003</span><span style="color:#ae81ff">9</span>	<span style="color:#ae81ff">1.72766995</span>	Start Enumerating Kernel APC	
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">00000040</span>	<span style="color:#ae81ff">1.72767246</span>	KernelRoutine: <span style="color:#ae81ff">0xFFFFF806203989F0</span>  RundownRoutine: <span style="color:#ae81ff">0xFFFFF806203989F0</span>  NormalRoutine: <span style="color:#ae81ff">0xFFFFF806202DCA00</span>	
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">00000041</span>	<span style="color:#ae81ff">1.72767377</span>	KernelRoutine: <span style="color:#ae81ff">0xFFFFCC8B3D646128</span>  RundownRoutine: <span style="color:#ae81ff">0xFFFFCC8B3D646128</span>  NormalRoutine: <span style="color:#ae81ff">0xFFFFCC8B3D744080</span>	
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">00000042</span>	<span style="color:#ae81ff">1.72767520</span>	KernelRoutine: <span style="color:#ae81ff">0xFFFFF806390B1000</span>  RundownRoutine: <span style="color:#ae81ff">0x0000000000000000</span>  NormalRoutine: <span style="color:#ae81ff">0x0000000000000000</span>	
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">00000043</span>	<span style="color:#ae81ff">1.72767580</span>	Start Enumerating User APC	
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">00000044</span>	<span style="color:#ae81ff">1.72768116</span>	KernelRoutine: <span style="color:#ae81ff">0xFFFFCC8B3D744080</span>  RundownRoutine: <span style="color:#ae81ff">0x0000000008000100</span>  NormalRoutine: <span style="color:#ae81ff">0x0000000000000100</span>	
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">00000045</span>	<span style="color:#ae81ff">1.72768235</span>	KernelRoutine: <span style="color:#ae81ff">0xFFFFF806390B1000</span>  RundownRoutine: <span style="color:#ae81ff">0x0000000000000000</span>  NormalRoutine: <span style="color:#ae81ff">0x00007FFE5AC604F0</span>	
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">00000046</span>	<span style="color:#ae81ff">1.72768319</span>	APC Enumeration <span style="color:#66d9ef">for</span> TID: <span style="color:#ae81ff">7340</span>	
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">00000047</span>	<span style="color:#ae81ff">1.72768378</span>	Start Enumerating Kernel APC	
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">0000004</span><span style="color:#ae81ff">8</span>	<span style="color:#ae81ff">1.72768605</span>	KernelRoutine: <span style="color:#ae81ff">0xFFFFCC8B3D645128</span>  RundownRoutine: <span style="color:#ae81ff">0xFFFFCC8B3D645128</span>  NormalRoutine: <span style="color:#ae81ff">0xFFFFCC8B3D744080</span>	
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">0000004</span><span style="color:#ae81ff">9</span>	<span style="color:#ae81ff">1.72768760</span>	KernelRoutine: <span style="color:#ae81ff">0xFFFFF806390B1000</span>  RundownRoutine: <span style="color:#ae81ff">0x0000000000000000</span>  NormalRoutine: <span style="color:#ae81ff">0x0000000000000000</span>	
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">00000050</span>	<span style="color:#ae81ff">1.72768819</span>	Start Enumerating User APC	
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">00000051</span>	<span style="color:#ae81ff">1.72769403</span>	KernelRoutine: <span style="color:#ae81ff">0xFFFFCC8B3D744080</span>  RundownRoutine: <span style="color:#ae81ff">0x0000000108000101</span>  NormalRoutine: <span style="color:#ae81ff">0x0000000000000100</span>	
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">00000052</span>	<span style="color:#ae81ff">1.72769558</span>	KernelRoutine: <span style="color:#ae81ff">0xFFFFF806390B1000</span>  RundownRoutine: <span style="color:#ae81ff">0x0000000000000000</span>  NormalRoutine: <span style="color:#ae81ff">0x00007FFE5AC604F0</span>	
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">00000054</span>	<span style="color:#ae81ff">1.72774374</span>	Finished UnHooking other CPUs	
+</span></span></code></pre></div><h1 id="refreneces">Refreneces:</h1>
+<ul>
+<li><a href="https://www.drdobbs.com/inside-nts-asynchronous-procedure-call/184416590">https://www.drdobbs.com/inside-nts-asynchronous-procedure-call/184416590</a></li>
+<li><a href="http://www.opening-windows.com/techart_windows_vista_apc_internals2.htm">http://www.opening-windows.com/techart_windows_vista_apc_internals2.htm</a></li>
+</ul>
+
+    </div>
+    <div class="post-footer">
+      
+    </div>
+  </article>
+
+    </main>
+  </body>
+</html>

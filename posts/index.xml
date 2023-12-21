@@ -6,7 +6,17 @@
     <description>Recent content in Posts on Security Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 20 Aug 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://MahmoudZohdy.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 02 May 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://MahmoudZohdy.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>New BlackCat Driver Reverse Engineering</title>
+      <link>https://MahmoudZohdy.github.io/posts/blackcat_driver/</link>
+      <pubDate>Tue, 02 May 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://MahmoudZohdy.github.io/posts/blackcat_driver/</guid>
+      <description>In this Blog I will explain my approach for solving one of the exercises from Practical Reverse Engineering Book, which is enumerating kernel/user Asynchronous Procedure Calls (APC) of a process.
+So I started Reverse Engineering Some of the APC related functions, creating windows kernel driver that uses APC in different situation and use Windbg to add breakpoint on the APC callback functions to see how it is dispatched, plus Reading lots of blogs and documentation on how APC is working and how it is dispatched</description>
+    </item>
+    
     <item>
       <title>Loaded Drivers Enumeration</title>
       <link>https://MahmoudZohdy.github.io/posts/practical_reverse_engineering/enumerate_loaded_drivers_every_10sec/</link>
