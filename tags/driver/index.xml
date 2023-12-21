@@ -6,15 +6,15 @@
     <description>Recent content in Driver on Security Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 02 May 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://MahmoudZohdy.github.io/tags/driver/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 21 Dec 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://MahmoudZohdy.github.io/tags/driver/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>New BlackCat Driver Reverse Engineering</title>
-      <link>https://MahmoudZohdy.github.io/posts/blackcat_driver/</link>
-      <pubDate>Tue, 02 May 2023 00:00:00 +0000</pubDate>
+      <title>An Overview of windows kernel loader and its variants</title>
+      <link>https://MahmoudZohdy.github.io/posts/an_overview_of_windows_kernel_loader_and_its_variants/</link>
+      <pubDate>Thu, 21 Dec 2023 00:00:00 +0000</pubDate>
       
-      <guid>https://MahmoudZohdy.github.io/posts/blackcat_driver/</guid>
-      <description>In this Blog I will explain my approach for solving one of the exercises from Practical Reverse Engineering Book, which is enumerating kernel/user Asynchronous Procedure Calls (APC) of a process.
-So I started Reverse Engineering Some of the APC related functions, creating windows kernel driver that uses APC in different situation and use Windbg to add breakpoint on the APC callback functions to see how it is dispatched, plus Reading lots of blogs and documentation on how APC is working and how it is dispatched</description>
+      <guid>https://MahmoudZohdy.github.io/posts/an_overview_of_windows_kernel_loader_and_its_variants/</guid>
+      <description>In this log post i will discuss the history of the use of window kernel loaders (reflectively mapping unsigned driver to kernel memory) and the increased number of signed loaders that is found on open-source repos and the adaption for it by the Threat actors.
+Windows Kernel architecture: Windows OS is divided into two main components: the user-mode (also known as &amp;ldquo;ring 3&amp;rdquo;) and the kernel-mode (also known as &amp;ldquo;ring 0&amp;rdquo;) parts.</description>
     </item>
     
     <item>
