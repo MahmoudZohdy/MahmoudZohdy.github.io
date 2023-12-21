@@ -9,16 +9,6 @@
     <lastBuildDate>Thu, 21 Dec 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://MahmoudZohdy.github.io/tags/cti/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>An Overview of windows kernel loader and its variants</title>
-      <link>https://MahmoudZohdy.github.io/posts/an_overview_of_windows_kernel_loader_and_its_variants/</link>
-      <pubDate>Thu, 21 Dec 2023 00:00:00 +0000</pubDate>
-      
-      <guid>https://MahmoudZohdy.github.io/posts/an_overview_of_windows_kernel_loader_and_its_variants/</guid>
-      <description>In this log post i will discuss the history of the use of window kernel loaders (reflectively mapping unsigned driver to kernel memory) and the increased number of signed loaders that is found on open-source repos and the adaption for it by the Threat actors.
-Windows Kernel architecture: Windows OS is divided into two main components: the user-mode (also known as &amp;ldquo;ring 3&amp;rdquo;) and the kernel-mode (also known as &amp;ldquo;ring 0&amp;rdquo;) parts.</description>
-    </item>
-    
-    <item>
-      <title>An Overview of windows kernel loader and its variants</title>
       <link>https://MahmoudZohdy.github.io/posts/cti/an_overview_of_windows_kernel_loader_and_its_variants/</link>
       <pubDate>Thu, 21 Dec 2023 00:00:00 +0000</pubDate>
       
