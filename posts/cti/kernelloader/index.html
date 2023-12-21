@@ -100,7 +100,7 @@ Windows Kernel architecture: Windows OS is divided into two main components: the
   <title>clock</title>
   <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
 </svg>
-          2 min read
+          4 min read
         </div>
         <div>
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tag">
@@ -123,7 +123,7 @@ The User-mode threads execute in a private process address space. Thus, system p
 <p>The kernel-mode has the most powerful access and privileged capabilities.3 The kernel is a high-privilege level that deals with different kinds of hardware interfaces and primitive system components provided by the operating system, such as processes, threads, handles, modules, registries, and other objects.
 With the level of access granted to the Windows kernel, the code that gets executed at the kernel level is capable of a wide range of monitoring and filtering mechanisms. Important system events or any data flow can be intercepted using appropriate kernel-level codes. The code execution at this level can prevent some events from happening if it is filtered by the registered kernel code and callbacks.</p>
 <p><img src="https://github.com/MahmoudZohdy/MahmoudZohdy.github.io/raw/main/doc/images/kernelloader/ringlevel.png" alt="The composite model of Windows subsystems"></p>
-<p><strong>The composite model of Windows subsystems.</strong></p>
+<p><strong>Figure 1: The composite model of Windows subsystems.</strong></p>
 <h1 id="why-the-use-of-kernel-loader">Why the use of kernel loader:</h1>
 <p>A kernel loader is a driver that allows the attackers to directly load a second-stage unsigned kernel module to memory, this technique gives the attacker lots of advantage:</p>
 <ul>
@@ -141,7 +141,32 @@ With the level of access granted to the Windows kernel, the code that gets execu
 <li>From the registry.</li>
 </ul>
 <p><img src="https://github.com/MahmoudZohdy/MahmoudZohdy.github.io/raw/main/doc/images/kernelloader/kernelloader.png" alt="Generic Kernel Loader"></p>
-<p><strong>Generic Kernel Loader.</strong></p>
+<p><strong>Figure 2: Generic Kernel Loader.</strong></p>
+<h1 id="the-usage-of-kernel-loader-by-knownunknown-threat-actor">The usage of kernel loader by known/unknown threat actor:</h1>
+<p>The use of the kernel loader is normally associated with more sophisticated attack because it offers more stealth operation to stay under the radar for longer time and give the threat actor the flexibility to adjust his technique during attacks by simply compiling his own unsigned kernel driver and load it on the fly.</p>
+<p>It was observed that the first use of kernel loader was by Festi the famous Botnet, where the initial kernel loader connects to a C2 server when loaded to memory to download additional unsigned kernel plug-in which is responsible for the main bot operation such as sending spam and the unsigned kernel plug-in are only saved in memory, so each time the machine restart it will need to get the kernel plug-in again.</p>
+<p><img src="https://github.com/MahmoudZohdy/MahmoudZohdy.github.io/raw/main/doc/images/kernelloader/festi.png" alt="Festi Loader"></p>
+<p><strong>Figure 3: Festi Loader</strong></p>
+<p>And on 2022 the group behind FiveSys also start to adopt this technique to hide their operation for a longer period of time, same as Festi the main kernel loader connect to the C2 server when loaded then download additional unsigned kernel plug-in to do the main operation which is install proxy, disable security product and hide its operation.</p>
+<p><img src="https://github.com/MahmoudZohdy/MahmoudZohdy.github.io/raw/main/doc/images/kernelloader/fivesys.png" alt="fivesys Loader"></p>
+<p><strong>Figure 4: FiveSys Loader</strong></p>
+<p>And after hunting on VirusTotal for other kernel loaders I found other loaders that load second stage from the file system and they are not associated with any known attack/Group/Threat Actor, they either loads the unsigned kernel driver from hardcoded path &ldquo;\??\C:\RWSafe.dat&rdquo; or Read the path of the unsinged driver from the registry then map it.</p>
+<p><img src="https://github.com/MahmoudZohdy/MahmoudZohdy.github.io/raw/main/doc/images/kernelloader/loader_filesystem.png" alt="Figure 5: load unsigned Driver from hardcoded path"></p>
+<p><strong>Figure 5: Figure 5: load unsigned Driver from hardcoded path.</strong></p>
+<h1 id="conclusion">Conclusion:</h1>
+<p>With the increase of windows built-in protection for the kernel space like signing enforcement on 64-bit windows “KMCS”, and new signing enforcement on WHCP platform with EV certificates, patchguard, and virtualization-based security, pushes the Threat actors to actively seeking new techniques and method for defense evasion and stay as long and possible without their operation being detected and uncovered.</p>
+<p>And the use of the kernel loader is one of those techniques that we see an increase in the adaption from the threat actor for it and we believe that more threat actor will adapt and use it in the future as it only requires to singe one driver and allow it to customize the attack for each victim and machine and allow to more stealth operation.</p>
+<h1 id="ioc">IOC:</h1>
+<ul>
+<li>f3a1b4b8c70a44e070f7425c691a71efad241059</li>
+<li>ff0ac64b2ec91ae4224ceb85d5c6ebba17407dc9</li>
+<li>c1da46824b711df26138e14588ecdf89065b578d</li>
+<li>3eff8b10f14e7bf9c899b125e22ef104e82bbc01</li>
+<li>492963f2e01083281082ec2aec2e78ff8cce65c4</li>
+<li>53db30ed44cfc85afefb6db51d3628895cf6d89a</li>
+<li>e91b9f4d122b1fc0e5c9e7e7bcbbc5be4fe3ff4b</li>
+<li>c7a82ea373f91d61b88c402ec17b5dc3bbc5b2ba</li>
+</ul>
 <h1 id="refreneces">Refreneces:</h1>
 <ul>
 <li><a href="https://www.trendmicro.com/en_vn/research/23/g/hunting-for-a-new-stealthy-universal-rootkit-loader.html">https://www.trendmicro.com/en_vn/research/23/g/hunting-for-a-new-stealthy-universal-rootkit-loader.html</a></li>
