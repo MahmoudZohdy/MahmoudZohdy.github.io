@@ -124,6 +124,24 @@ The User-mode threads execute in a private process address space. Thus, system p
 With the level of access granted to the Windows kernel, the code that gets executed at the kernel level is capable of a wide range of monitoring and filtering mechanisms. Important system events or any data flow can be intercepted using appropriate kernel-level codes. The code execution at this level can prevent some events from happening if it is filtered by the registered kernel code and callbacks.</p>
 <p><img src="https://github.com/MahmoudZohdy/MahmoudZohdy.github.io/raw/main/doc/images/kernelloader/ringlevel.png" alt="The composite model of Windows subsystems"></p>
 <p><strong>The composite model of Windows subsystems.</strong></p>
+<h1 id="why-the-use-of-kernel-loader">Why the use of kernel loader:</h1>
+<p>A kernel loader is a driver that allows the attackers to directly load a second-stage unsigned kernel module to memory, this technique gives the attacker lots of advantage:</p>
+<ul>
+<li>The freedom to be able customize the second stage unsigned driver for each attack.</li>
+<li>They will need to only sign the loader with valid certificates.</li>
+<li>Very stealth operation as the loaded unsigned driver can be only in memory and never touch the disk.</li>
+<li>Can go undetected for very long time</li>
+<li>Hide the attack’s main objective.</li>
+</ul>
+<p>But also using this technique come with cost as windows kernel drivers has very small room for error and if there is any issue in parsing, mapping, and the relocation of the unsigned driver while loading it this will lead to system crash and might uncover the entire operation.</p>
+<p>The Threat actor can use the loader to load unsigned kernel drivers from different sources:</p>
+<ul>
+<li>From the network by connecting to C2 server and download and load the driver directly.</li>
+<li>From the filesystem.</li>
+<li>From the registry.</li>
+</ul>
+<p><img src="https://github.com/MahmoudZohdy/MahmoudZohdy.github.io/raw/main/doc/images/kernelloader/kernelloader.png" alt="Generic Kernel Loader"></p>
+<p><strong>Generic Kernel Loader.</strong></p>
 <h1 id="refreneces">Refreneces:</h1>
 <ul>
 <li><a href="https://www.trendmicro.com/en_vn/research/23/g/hunting-for-a-new-stealthy-universal-rootkit-loader.html">https://www.trendmicro.com/en_vn/research/23/g/hunting-for-a-new-stealthy-universal-rootkit-loader.html</a></li>
