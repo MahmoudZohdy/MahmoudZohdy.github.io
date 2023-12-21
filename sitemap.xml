@@ -2,37 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://MahmoudZohdy.github.io/posts/cti/kernelloader/</loc>
-    <lastmod>2023-12-21T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://MahmoudZohdy.github.io/tags/cti/</loc>
-    <lastmod>2023-12-21T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://MahmoudZohdy.github.io/tags/driver/</loc>
-    <lastmod>2023-12-21T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://MahmoudZohdy.github.io/tags/kernel/</loc>
-    <lastmod>2023-12-21T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://MahmoudZohdy.github.io/tags/kernelloader/</loc>
-    <lastmod>2023-12-21T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://MahmoudZohdy.github.io/posts/</loc>
-    <lastmod>2023-12-21T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://MahmoudZohdy.github.io/</loc>
-    <lastmod>2023-12-21T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://MahmoudZohdy.github.io/tags/</loc>
-    <lastmod>2023-12-21T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>https://MahmoudZohdy.github.io/wi/</loc>
     <lastmod>2023-12-21T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://MahmoudZohdy.github.io/tags/windows_internal/</loc>
-    <lastmod>2023-12-21T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>https://MahmoudZohdy.github.io/development/</loc>
+    <lastmod>2022-08-20T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://MahmoudZohdy.github.io/tags/driver/</loc>
     <lastmod>2022-08-20T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://MahmoudZohdy.github.io/tags/driver_enumeration/</loc>
@@ -41,10 +17,22 @@
     <loc>https://MahmoudZohdy.github.io/posts/practical_reverse_engineering/enumerate_loaded_drivers_every_10sec/</loc>
     <lastmod>2022-08-20T00:00:00+00:00</lastmod>
   </url><url>
+    <loc>https://MahmoudZohdy.github.io/posts/</loc>
+    <lastmod>2022-08-20T00:00:00+00:00</lastmod>
+  </url><url>
     <loc>https://MahmoudZohdy.github.io/tags/practical_reverse_engineering/</loc>
     <lastmod>2022-08-20T00:00:00+00:00</lastmod>
   </url><url>
+    <loc>https://MahmoudZohdy.github.io/</loc>
+    <lastmod>2022-08-20T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://MahmoudZohdy.github.io/tags/</loc>
+    <lastmod>2022-08-20T00:00:00+00:00</lastmod>
+  </url><url>
     <loc>https://MahmoudZohdy.github.io/tags/timers/</loc>
+    <lastmod>2022-08-20T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://MahmoudZohdy.github.io/tags/windows_internal/</loc>
     <lastmod>2022-08-20T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://MahmoudZohdy.github.io/tags/apc/</loc>

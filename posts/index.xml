@@ -6,17 +6,7 @@
     <description>Recent content in Posts on Security Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 21 Dec 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://MahmoudZohdy.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>An Overview of windows kernel loader and its variants</title>
-      <link>https://MahmoudZohdy.github.io/posts/cti/kernelloader/</link>
-      <pubDate>Thu, 21 Dec 2023 00:00:00 +0000</pubDate>
-      
-      <guid>https://MahmoudZohdy.github.io/posts/cti/kernelloader/</guid>
-      <description>In this log post i will discuss the history of the use of window kernel loaders (reflectively mapping unsigned driver to kernel memory) and the increased number of signed loaders that is found on open-source repos and the adaption for it by the Threat actors.
-Windows Kernel architecture: Windows OS is divided into two main components: the user-mode (also known as &amp;ldquo;ring 3&amp;rdquo;) and the kernel-mode (also known as &amp;ldquo;ring 0&amp;rdquo;) parts.</description>
-    </item>
-    
+    <lastBuildDate>Sat, 20 Aug 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://MahmoudZohdy.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Loaded Drivers Enumeration</title>
       <link>https://MahmoudZohdy.github.io/posts/practical_reverse_engineering/enumerate_loaded_drivers_every_10sec/</link>
