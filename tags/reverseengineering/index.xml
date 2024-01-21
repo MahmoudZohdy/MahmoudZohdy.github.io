@@ -13,7 +13,8 @@
       <pubDate>Sun, 21 Jan 2024 00:00:00 +0000</pubDate>
       
       <guid>https://MahmoudZohdy.github.io/posts/re/plugx/</guid>
-      <description>In this blog I will talk about the Signed kernel driver that is used in a recent PlugX attack, the signed kernel drivers that are found on Virus Total are signed through Windows Hardware compatibility program (WHCP) and Sharp Brilliance Communication Technology Co., Ltd., in summary the kernel driver act as user-mode loader which decrypt a 32-bit user-mode PE file and inject it inside Svchost.exe as child process for services.exe.</description>
+      <description>In this blog I will talk about the Signed kernel driver that is used in a recent PlugX attack, the signed kernel drivers that were found on Virus Total are signed through Windows Hardware compatibility program (WHCP) and Sharp Brilliance Communication Technology Co., Ltd..
+In summary the kernel driver act as user-mode loader which decrypt a 32-bit user-mode PE file and inject it inside Svchost.exe as child process for services.exe.</description>
     </item>
     
   </channel>
