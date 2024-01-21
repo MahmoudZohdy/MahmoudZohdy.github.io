@@ -217,8 +217,8 @@ In summary the kernel driver act as user-mode loader which decrypt a 32-bit user
 <p><strong>Figure 25: Hook Ntdll!NtClose to make the shellcode execute.</strong></p>
 <h1 id="user-mode-component">User-Mode Component</h1>
 <p>User-mode component is a simple code that injects another 32-bit PE module in svchost.exe process and monitors it if it gets terminated it will start it again.</p>
-<p><img src="https://github.com/MahmoudZohdy/MahmoudZohdy.github.io/raw/main/doc/images/plugx/usercomponent.png" alt="Use-Mode Component"></p>
-<p><strong>Figure 26: Use-Mode Component.</strong></p>
+<p><img src="https://github.com/MahmoudZohdy/MahmoudZohdy.github.io/raw/main/doc/images/plugx/usercomponent.png" alt="User-Mode Component"></p>
+<p><strong>Figure 26: User-Mode Component.</strong></p>
 <h1 id="yare-rule">Yare Rule:</h1>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>rule PlugX{
 </span></span><span style="display:flex;"><span>    meta:
