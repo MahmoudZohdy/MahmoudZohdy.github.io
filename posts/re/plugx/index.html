@@ -140,12 +140,12 @@ In summary the kernel driver act as user-mode loader which decrypt a 32-bit user
 <p><strong>Figure 6: Check if Services.exe process running.</strong></p>
 <p><img src="https://github.com/MahmoudZohdy/MahmoudZohdy.github.io/raw/main/doc/images/plugx/loop.png" alt="Loop untill Services.exe start"></p>
 <p><strong>Figure 7: Loop untill Services.exe start.</strong></p>
-<p>Then it reads configuration from the registry key &ldquo;<strong>\Registry\Machine\SOFTWARE\DtSft\d1</strong>&rdquo;  and value &ldquo;<strong>M1</strong>&rdquo; and the data is compared to the current system time, and based on the data in that registry &ldquo;76 da 34 01&rdquo; if the current time is after &ldquo;<strong>Wednesday, March 9, 2033 8:07:29 PM</strong>&rdquo; the driver will not continue operation and return and will not start the user-mode component</p>
+<p>Then it reads configuration from the registry key &ldquo;<strong>\Registry\Machine\SOFTWARE\DtSft\d1</strong>&rdquo;  and subkeys &ldquo;<strong>M1</strong>&rdquo; and the data is compared to the current system time, and based on the data in that registry &ldquo;76 da 34 01&rdquo; if the current time is after &ldquo;<strong>Wednesday, March 9, 2033 8:07:29 PM</strong>&rdquo; the driver will not continue operation and return and will not start the user-mode component</p>
 <p><img src="https://github.com/MahmoudZohdy/MahmoudZohdy.github.io/raw/main/doc/images/plugx/time1.png" alt="Read Attack time from registry"></p>
 <p><strong>Figure 8: Read Attack time from registry.</strong></p>
 <p><img src="https://github.com/MahmoudZohdy/MahmoudZohdy.github.io/raw/main/doc/images/plugx/time2.png" alt="check if current time before configured time"></p>
 <p><strong>Figure 9: check if current time before configured time.</strong></p>
-<p>Then the driver will read the decryption key from the registry value &ldquo;<strong>M3</strong>&rdquo; under the key &ldquo;<strong>\Registry\Machine\SOFTWARE\DtSft\d1</strong>*, the decryption key will be used to decrypt the PE module from the registry</p>
+<p>Then the driver will read the decryption key from the registry subkeys &ldquo;<strong>M3</strong>&rdquo; under the key &ldquo;<strong>\Registry\Machine\SOFTWARE\DtSft\d1</strong>*, the decryption key will be used to decrypt the PE module from the registry</p>
 <p><strong>Decryption_Key</strong>=  &ldquo;ec,a4,00,c4&rdquo;</p>
 <p><img src="https://github.com/MahmoudZohdy/MahmoudZohdy.github.io/raw/main/doc/images/plugx/decryptionkey.png" alt="Read Decryption Key from Registry"></p>
 <p><strong>Figure 10: Read Decryption Key from Registry.</strong></p>
@@ -200,7 +200,7 @@ In summary the kernel driver act as user-mode loader which decrypt a 32-bit user
 <p><strong>Figure 18: Get Kernel API Address.</strong></p>
 <p><img src="https://github.com/MahmoudZohdy/MahmoudZohdy.github.io/raw/main/doc/images/plugx/usermodeapi.png" alt="Get User API Address"></p>
 <p><strong>Figure 19: Get User API Address.</strong></p>
-<p>Then the driver will read the User-Mode component from registry value &ldquo;<strong>M2</strong>&rdquo; under registry key &ldquo;<strong>\Registry\Machine\SOFTWARE\DtSft\d1</strong>&rdquo; and then <strong>XOR</strong> decrypt it.</p>
+<p>Then the driver will read the User-Mode component from registry subkeys &ldquo;<strong>M2</strong>&rdquo; under registry key &ldquo;<strong>\Registry\Machine\SOFTWARE\DtSft\d1</strong>&rdquo; and then <strong>XOR</strong> decrypt it.</p>
 <p><img src="https://github.com/MahmoudZohdy/MahmoudZohdy.github.io/raw/main/doc/images/plugx/decryptionfunc.png" alt="Read User-mode component and decrypt it"></p>
 <p><strong>Figure 20: Read User-mode component and decrypt it.</strong></p>
 <p>Then it confirms that the user-mode component is a 32-bit file and if not it will not start it, after that it will allocate memory and copy a <strong>ShellCode</strong> function which will be injected in services.exe to start the main user-component after that it will do a sequence of <strong>NtWriteVirtualMemory</strong> calls to write the <strong>ShellCode</strong>, path to <strong>Svchost.exe</strong> file and the <strong>User-mode component</strong> to the <strong>services.exe</strong> process.</p>
