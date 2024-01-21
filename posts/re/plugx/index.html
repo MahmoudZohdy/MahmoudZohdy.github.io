@@ -174,7 +174,7 @@ In summary the kernel driver act as user-mode loader which decrypt a 32-bit user
 </span></span><span style="display:flex;"><span>DWORD64 Kernel_API_Address; 	<span style="color:#75715e">// will be null when used in resolving address in kernel32.dll
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>DWORD64 User_API_Address;
 </span></span><span style="display:flex;"><span>DWORD64 EAX_Value;		        <span style="color:#75715e">//index of the function in the SSDT table, will be null in case kernel32.dll
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>Char[<span style="color:#ae81ff">80</span>h] API_Name;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">char</span>    API_Name[<span style="color:#ae81ff">80</span>h];
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p><img src="https://github.com/MahmoudZohdy/MahmoudZohdy.github.io/raw/main/doc/images/plugx/API.png" alt="Resolving API Address"></p>
 <p><strong>Figure 11: Resolving API Address.</strong></p>
