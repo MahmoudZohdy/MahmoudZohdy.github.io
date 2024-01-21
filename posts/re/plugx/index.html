@@ -179,7 +179,7 @@ In summary the kernel driver act as user-mode loader which decrypt a 32-bit user
 </span></span></code></pre></div><p><img src="https://github.com/MahmoudZohdy/MahmoudZohdy.github.io/raw/main/doc/images/plugx/API.png" alt="Resolving API Address"></p>
 <p><strong>Figure 11: Resolving API Address.</strong></p>
 <h1 id="locate-the-ssdt-table">Locate the SSDT table:</h1>
-<p>To resolve the kernel API address the driver first locate the <strong>SSDT table</strong>, it does so by scanning the <strong>nt!ZwClose</strong> Address for the byte &ldquo;<strong>0xE9</strong>&rdquo; which is a <strong>JUMP</strong> instruction to &ldquo;<strong>nt!KiServiceInternal</strong>&rdquo;.</p>
+<p>To resolve the kernel API address the driver first locate the <strong>SSDT table</strong>, it does so by scanning the <strong>nt!ZwClose</strong> Function for the byte &ldquo;<strong>0xE9</strong>&rdquo; which is a <strong>JUMP</strong> instruction to &ldquo;<strong>nt!KiServiceInternal</strong>&rdquo;.</p>
 <p><img src="https://github.com/MahmoudZohdy/MahmoudZohdy.github.io/raw/main/doc/images/plugx/SSDT1.png" alt="Locating the nt!KiServiceInternal function"></p>
 <p><strong>Figure 12: Locating the nt!KiServiceInternal function.</strong></p>
 <p><img src="https://github.com/MahmoudZohdy/MahmoudZohdy.github.io/raw/main/doc/images/plugx/SSDT12.png" alt="Locating the nt!KiServiceInternal function"></p>
