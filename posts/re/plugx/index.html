@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <title>A Look into PlugX Kernel driver // Security Blog</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.101.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="Mahmoud Zohdy" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="https://MahmoudZohdy.github.io/css/main.min.4a7ec8660f9a44b08c4da97c5f2e31b1192df1d4d0322e65c0dbbc6ecb1b863f.css" />
+
+    
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="A Look into PlugX Kernel driver"/>
+<meta name="twitter:description" content="In this blog I will talk about the Signed kernel driver that is used in a recent PlugX attack, the signed kernel drivers that are found on Virus Total are signed through Windows Hardware compatibility program (WHCP) and Sharp Brilliance Communication Technology Co., Ltd., in summary the kernel driver act as user-mode loader which decrypt a 32-bit user-mode PE file and inject it inside Svchost.exe as child process for services.exe."/>
+
+    <meta property="og:title" content="A Look into PlugX Kernel driver" />
+<meta property="og:description" content="In this blog I will talk about the Signed kernel driver that is used in a recent PlugX attack, the signed kernel drivers that are found on Virus Total are signed through Windows Hardware compatibility program (WHCP) and Sharp Brilliance Communication Technology Co., Ltd., in summary the kernel driver act as user-mode loader which decrypt a 32-bit user-mode PE file and inject it inside Svchost.exe as child process for services.exe." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://MahmoudZohdy.github.io/posts/re/plugx/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-01-21T00:00:00+00:00" />
+<meta property="article:modified_time" content="2024-01-21T00:00:00+00:00" />
+
+
+
+  </head>
+  <body>
+    <header class="app-header">
+      <a href="https://MahmoudZohdy.github.io/"><img class="app-header-avatar" src="https://github.com/MahmoudZohdy/MahmoudZohdy.github.io/raw/main/doc/images/image.png" alt="Mahmoud Zohdy" /></a>
+      <h1>Security Blog</h1>
+      <nav class="app-header-menu">
+          <a class="app-header-menu-item" href="/">Home</a>
+            <br>
+          
+          <a class="app-header-menu-item" href="/tags/">Tags</a>
+            <br>
+          
+          <a class="app-header-menu-item" href="/aboutme/">About</a>
+            <br>
+          
+          <a class="app-header-menu-item" href="/development/">Development</a>
+            <br>
+          
+          <a class="app-header-menu-item" href="/re/">Reverse Engineering</a>
+            <br>
+          
+          <a class="app-header-menu-item" href="/wi/">Windows internal</a>
+      </nav>
+      <p>Security Research, Windows Internal, Reverse Engineering, Windows Kernel/System Developer</p>
+      <div class="app-header-social">
+        
+          <a href="https://github.com/MahmoudZohdy" target="_blank" rel="noreferrer noopener">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-github">
+  <title>My Github</title>
+  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+</svg>
+          </a>
+        
+          <a href="https://www.linkedin.com/in/mahmoud-zohdy-519328124/" target="_blank" rel="noreferrer noopener">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-linkedin">
+  <title>My linkedin</title>
+  <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle>
+</svg>
+          </a>
+        
+          <a href="https://twitter.com/7odaZohdy" target="_blank" rel="noreferrer noopener">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-twitter">
+  <title>My twitter</title>
+  <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+</svg>
+          </a>
+        
+          <a href="mailto:abdelaziz.zohdy@gmail.com" target="_blank" rel="noreferrer noopener">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-link">
+  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+</svg>
+          </a>
+        
+      </div>
+    </header>
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">A Look into PlugX Kernel driver</h1>
+      <div class="post-meta">
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
+  <title>calendar</title>
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
+</svg>
+          Jan 21, 2024
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
+  <title>clock</title>
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+          6 min read
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tag">
+  <title>tag</title>
+  <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line>
+</svg>
+              <a class="tag" href="https://MahmoudZohdy.github.io/tags/windows_internal/">Windows_Internal</a>
+              <a class="tag" href="https://MahmoudZohdy.github.io/tags/cti/">CTI</a>
+              <a class="tag" href="https://MahmoudZohdy.github.io/tags/kernel/">Kernel</a>
+              <a class="tag" href="https://MahmoudZohdy.github.io/tags/driver/">Driver</a>
+              <a class="tag" href="https://MahmoudZohdy.github.io/tags/reverseengineering/">Reverseengineering</a>
+              <a class="tag" href="https://MahmoudZohdy.github.io/tags/malwareanalysis/">malwareanalysis</a>
+              <a class="tag" href="https://MahmoudZohdy.github.io/tags/plugx/">PlugX</a>
+        </div>
+      </div>
+    </header>
+    <div class="post-content">
+      <p>In this blog I will talk about the Signed kernel driver that is used in a recent <strong>PlugX</strong> attack, the signed kernel drivers that are found on Virus Total are signed through <strong>Windows Hardware compatibility program (WHCP)</strong> and <strong>Sharp Brilliance Communication Technology Co., Ltd.</strong>, in summary the kernel driver act as user-mode loader which decrypt a 32-bit user-mode PE file and inject it inside <strong>Svchost.exe</strong> as child process for <strong>services.exe</strong>.</p>
+<h1 id="driver-analysis">Driver Analysis:</h1>
+<p>the driver first registers a <strong>mini-filter</strong> callback functions and create a communication port with the name &ldquo;<strong>\DtSfProtect{A71A0369-D7CA-4d4f-9EEE-01F8FE53C0D3}</strong>&rdquo; to be able to communicate with the user-mode agent (it only allows only one user-agent to connect and accept connection from any process, and it is not used by the user-client)</p>
+<p><img src="https://github.com/MahmoudZohdy/MahmoudZohdy.github.io/raw/main/doc/images/plugx/minifilter.png" alt="Register Mini-Filter Driver and create Port Communication"></p>
+<p><strong>Figure 1: Register Mini-Filter Driver and create Port Communication.</strong></p>
+<p><img src="https://github.com/MahmoudZohdy/MahmoudZohdy.github.io/raw/main/doc/images/plugx/connectcallback.png" alt="Port Connection CallBack function"></p>
+<p><strong>Figure 2: Port Connection CallBack function.</strong></p>
+<p>Also, the registered filesystem callback pre-operation and post-operation does not do any monitor/protection and just return.</p>
+<p><img src="https://github.com/MahmoudZohdy/MahmoudZohdy.github.io/raw/main/doc/images/plugx/precreate.png" alt="FileSystem Pre-Operation"></p>
+<p><strong>Figure 3: FileSystem Pre-Operation.</strong></p>
+<p>Then it creates <strong>Process Object Notifications</strong> for <strong>protection</strong> it monitors any attempt to open the user-mode process and forbids any attempt to access from kernel drivers and user mode process.</p>
+<p><img src="https://github.com/MahmoudZohdy/MahmoudZohdy.github.io/raw/main/doc/images/plugx/registerobjectcallback.png" alt="Register pre-Process object Callback"></p>
+<p><strong>Figure 4: Register pre-Process object Callback.</strong></p>
+<p><img src="https://github.com/MahmoudZohdy/MahmoudZohdy.github.io/raw/main/doc/images/plugx/processobjectpreoperation.png" alt="Pre-Process Callback Function"></p>
+<p><strong>Figure 5: Pre-Process Callback Function.</strong></p>
+<p>After those initializations it creates a thread that will be responsible for resolving all the needed functions address and starting the main user-mode component.</p>
+<p>It first tries to check if <strong>services.exe</strong> process started or not, it do that by using the <strong>NtQuerySystemInformation</strong> API to get information about the running process, and if <strong>services.exe</strong> still not running it will go in infinite loop until it starts before continue its operation.</p>
+<p><img src="https://github.com/MahmoudZohdy/MahmoudZohdy.github.io/raw/main/doc/images/plugx/servicesprocess.png" alt="Check if Services.exe process running"></p>
+<p><strong>Figure 6: Pre-Process Callback Function.</strong></p>
+<p><img src="https://github.com/MahmoudZohdy/MahmoudZohdy.github.io/raw/main/doc/images/plugx/loop.png" alt="Loop untill Services.exe start"></p>
+<p><strong>Figure 7: Pre-Process Callback Function.</strong></p>
+<p>Then it reads configuration from the registry key &ldquo;<strong>\Registry\Machine\SOFTWARE\DtSft\d1</strong>&rdquo;  and value &ldquo;<strong>M1</strong>&rdquo; and the data is compared to the current system time, and based on the data in that registry &ldquo;76 da 34 01&rdquo; if the current time is after &ldquo;<strong>Wednesday, March 9, 2033 8:07:29 PM</strong>&rdquo; the driver will not continue operation and return and will not start the user-mode component</p>
+<p><img src="https://github.com/MahmoudZohdy/MahmoudZohdy.github.io/raw/main/doc/images/plugx/time1.png" alt="Read Attack time from registry"></p>
+<p><strong>Figure 8: Read Attack time from registry.</strong></p>
+<p><img src="https://github.com/MahmoudZohdy/MahmoudZohdy.github.io/raw/main/doc/images/plugx/time2.png" alt="check if current time before configured time"></p>
+<p><strong>Figure 9: check if current time before configured time.</strong></p>
+<p>Then the driver will read the decryption key from the registry value &ldquo;<strong>M3</strong>&rdquo; under the key &ldquo;<strong>\Registry\Machine\SOFTWARE\DtSft\d1</strong>*, the decryption key will be used to decrypt the PE module from the registry</p>
+<p><strong>Decryption_Key</strong>=  &ldquo;ec,a4,00,c4&rdquo;</p>
+<p><img src="https://github.com/MahmoudZohdy/MahmoudZohdy.github.io/raw/main/doc/images/plugx/decryptionkey.png" alt="Read Decryption Key from Registry"></p>
+<p><strong>Figure 10: Read Decryption Key from Registry.</strong></p>
+<p>After that the driver will resolve the needed API functions from the windows kernel and from ntdll.dll and kernel32.dll, it will use the bellow struct to resolve the address and it will do that by doing the following steps:</p>
+<ul>
+<li>For ntdll.dll and kernel APIs
+<ol>
+<li>Locate the KeServiceDescriptorTable (SSDT Table)</li>
+<li>Read ntdll.dll from hard disk.</li>
+<li>Manually Map ntdll.dll DLL to kernel memory.</li>
+<li>Search the export address table for the API it needs using the field &ldquo;<strong>API_Info.API_Name</strong>&rdquo; from the API struct.</li>
+<li>Extract the value that will be moved inside the EAX register before the sysenter instruction. It will be used as index in the SSDT table to resolve the Kernel API.</li>
+<li>Fill in the rest of the fields in the struct (kernel address, user-mode address, EAX value)</li>
+</ol>
+</li>
+<li>For kernel32.dll APIs
+<ol>
+<li>Read kernel32.dll from hard disk.</li>
+<li>Manually Map kernel32.dll DLL to kernel memory.</li>
+<li>Search the export address table for the API it needs using the field &ldquo;<strong>API_Info.API_Name</strong>&rdquo; from the API struct.</li>
+<li>Fill in the user-mode address field in the struct (the rest of the fields will be null values)</li>
+</ol>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> Struct API_Info{
+</span></span><span style="display:flex;"><span>DWORD64 Kernel_API_Address; 	<span style="color:#75715e">// will be null when used in resolving address in kernel32.dll
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>DWORD64 User_API_Address;
+</span></span><span style="display:flex;"><span>DWORD64 EAX_Value;		        <span style="color:#75715e">//index of the function in the SSDT table, will be null in case kernel32.dll
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>Char[<span style="color:#ae81ff">80</span>h] API_Name;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><img src="https://github.com/MahmoudZohdy/MahmoudZohdy.github.io/raw/main/doc/images/plugx/API.png" alt="Resolving API Address"></p>
+<p><strong>Figure 11: Resolving API Address.</strong></p>
+<h1 id="locate-the-ssdt-table">Locate the SSDT table:</h1>
+<p>To resolve the kernel API address the driver first locate the <strong>SSDT table</strong>, it does so by scanning the <strong>nt!ZwClose</strong> Address for the byte &ldquo;<strong>0xE9</strong>&rdquo; which is a <strong>JUMP</strong> instruction to &ldquo;<strong>nt!KiServiceInternal</strong>&rdquo;.</p>
+<p><img src="https://github.com/MahmoudZohdy/MahmoudZohdy.github.io/raw/main/doc/images/plugx/SSDT1.png" alt="Locating the nt!KiServiceInternal function"></p>
+<p><strong>Figure 12: Locating the nt!KiServiceInternal function.</strong></p>
+<p><img src="https://github.com/MahmoudZohdy/MahmoudZohdy.github.io/raw/main/doc/images/plugx/SSDT12.png" alt="Locating the nt!KiServiceInternal function"></p>
+<p><strong>Figure 13: Locating the nt!KiServiceInternal function.</strong></p>
+<p>After locating &ldquo;<strong>nt!KiServiceInternal</strong>&rdquo; code the driver will search in it for the pattern &ldquo;<strong>0x8D4C</strong>&rdquo; which is &ldquo;<strong>lea  r11,[nt!KiSystemServiceStart]</strong>&rdquo; to locate the address of the function &ldquo;<strong>nt!KiSystemServiceStart</strong>&rdquo;</p>
+<p><img src="https://github.com/MahmoudZohdy/MahmoudZohdy.github.io/raw/main/doc/images/plugx/SSDT2.png" alt="Locating the nt!KiSystemServiceStart function"></p>
+<p><strong>Figure 14: Locating the nt!KiSystemServiceStart function.</strong></p>
+<p>Then search for the pattern &ldquo;<strong>0x4c8d15</strong>&rdquo; to locate the address of &ldquo;<strong>lea  r10,[nt!KeServiceDescriptorTable]</strong>&rdquo; and from there it will have the address of <strong>KeServiceDescriptorTable</strong> to continue the operation to resolve Kernel API address.</p>
+<p><img src="https://github.com/MahmoudZohdy/MahmoudZohdy.github.io/raw/main/doc/images/plugx/SSDT3.png" alt="Locating the KeServiceDescriptorTable Address"></p>
+<p><strong>Figure 15: Locating the KeServiceDescriptorTable Address.</strong></p>
+<p>After locating the <strong>SSDT</strong> table it will read the DLLs from disk and map it to memory to fill in the <strong>API_Info</strong> structure.</p>
+<p><img src="https://github.com/MahmoudZohdy/MahmoudZohdy.github.io/raw/main/doc/images/plugx/readmapdll.png" alt="Reading and mapping ntdll.dll to kernel memory"></p>
+<p><strong>Figure 16: Reading and mapping ntdll.dll to kernel memory.</strong></p>
+<p><img src="https://github.com/MahmoudZohdy/MahmoudZohdy.github.io/raw/main/doc/images/plugx/fillapistruct.png" alt="Filling the API_Info structure"></p>
+<p><strong>Figure 17: Filling the API_Info structure.</strong></p>
+<p>also the driver will resolve the functions address <strong>twice</strong> once to get the kernel API, and the second time to get the user-mode API from ntdll.dll and kernel32.dll, and the reason for that is because the <strong>services.exe</strong> process might not be fully initialized and the ntdll.dll and kernel32.dll DLLs might not be fully loaded yet.</p>
+<p><img src="https://github.com/MahmoudZohdy/MahmoudZohdy.github.io/raw/main/doc/images/plugx/kernelapi.png" alt="Get Kernel API Address"></p>
+<p><strong>Figure 18: Get Kernel API Address.</strong></p>
+<p><img src="https://github.com/MahmoudZohdy/MahmoudZohdy.github.io/raw/main/doc/images/plugx/usermodeapi.png" alt="Get User API Address"></p>
+<p><strong>Figure 19: Get User API Address.</strong></p>
+<p>Then the driver will read the User-Mode component from registry value &ldquo;<strong>M2</strong>&rdquo; under registry key &ldquo;<strong>\Registry\Machine\SOFTWARE\DtSft\d1</strong>&rdquo; and then <strong>XOR</strong> decrypt it.</p>
+<p><img src="https://github.com/MahmoudZohdy/MahmoudZohdy.github.io/raw/main/doc/images/plugx/decryptionfunc.png" alt="Read User-mode component and decrypt it"></p>
+<p><strong>Figure 20: Read User-mode component and decrypt it.</strong></p>
+<p>Then it confirms that the user-mode component is a 32-bit file and if not it will not start it, after that it will allocate memory and copy a <strong>ShellCode</strong> function which will be injected in services.exe to start the main user-component after that it will do a sequence of <strong>NtWriteVirtualMemory</strong> calls to write the <strong>ShellCode</strong>, path to <strong>Svchost.exe</strong> file and the <strong>User-mode component</strong> to the <strong>services.exe</strong> process.</p>
+<p><img src="https://github.com/MahmoudZohdy/MahmoudZohdy.github.io/raw/main/doc/images/plugx/allocatememoryforshellcode.png" alt="Allocate Memory for the shellcode"></p>
+<p><strong>Figure 21: Allocate Memory for the shellcode.</strong></p>
+<p><img src="https://github.com/MahmoudZohdy/MahmoudZohdy.github.io/raw/main/doc/images/plugx/write1.png" alt="write the shellcode and svchost path to services.exe process"></p>
+<p><strong>Figure 22: write the shellcode and svchost path to services.exe process.</strong></p>
+<p><img src="https://github.com/MahmoudZohdy/MahmoudZohdy.github.io/raw/main/doc/images/plugx/write.png" alt="change permission of memory to be able to write to it"></p>
+<p><strong>Figure 23: change permission of memory to be able to write to it.</strong></p>
+<p>And to make the <strong>ShellCode</strong> gets executed it will hook the <strong>Ntdll!NtClose</strong> to make it jump to the ShellCode after the ShellCode gets execute it will restore the <strong>Ntdll!NtClose</strong> Function to its original state and make the process continue operation and normal</p>
+<p><img src="https://github.com/MahmoudZohdy/MahmoudZohdy.github.io/raw/main/doc/images/plugx/hookntclose.png" alt="Hook Ntdll!NtClose to make the shellcode execute"></p>
+<p><strong>Figure 24: Hook Ntdll!NtClose to make the shellcode execute.</strong></p>
+<p><img src="https://github.com/MahmoudZohdy/MahmoudZohdy.github.io/raw/main/doc/images/plugx/hook.png" alt="Hook Ntdll!NtClose to make the shellcode execute"></p>
+<p><strong>Figure 25: Hook Ntdll!NtClose to make the shellcode execute.</strong></p>
+<p>User-mode component is a simple code that injects another 32-bit PE module in svchost.exe process and monitors it if it gets terminated it will start it again.</p>
+<p><img src="https://github.com/MahmoudZohdy/MahmoudZohdy.github.io/raw/main/doc/images/plugx/hook.png" alt="Use-Mode Component"></p>
+<p><strong>Figure 26: Use-Mode Component.</strong></p>
+<h1 id="yare-rule">Yare Rule:</h1>
+<p>rule PlugX{
+meta:
+author = &ldquo;Mahmoud Zohdy&rdquo;
+date_created = &ldquo;2024-01-20&rdquo;
+description = &ldquo;Kernel driver used in recent PlugX attack&rdquo;</p>
+<p>strings:
+$string0 = &ldquo;\SystemRoot\system32\drivers\DtSfProtect&rdquo; wide ascii
+$string1 = &ldquo;\DtSfProtect{A71A0369-D7CA-4d4f-9EEE-01F8FE53C0D3}&rdquo; wide ascii</p>
+<p>condition:
+uint16(0) == 0x5A4D and uint32(uint32(0x3C)) == 0x00004550 and any of ( $string* )
+}</p>
+<h1 id="ioc">IOC:</h1>
+<table>
+<thead>
+<tr>
+<th>SHA-1 Hash</th>
+<th>Signer</th>
+<th>Signing Date</th>
+<th>Program Name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>4307c1e76e66fb09e52c44b83f12374c320cea0d</td>
+<td>Microsoft Windows Hardware Compatibility Publisher</td>
+<td>2023-03-23</td>
+<td>淮南锋川网络科技有限责任公司	(Huainan Fengchuan Network Technology Co., Ltd.)</td>
+</tr>
+<tr>
+<td>b421c7fb5a041b9225e96f9c82b418b5637dd763</td>
+<td>Sharp Brilliance Communication Technology Co., Ltd.</td>
+<td>2023-08-27</td>
+<td></td>
+</tr>
+<tr>
+<td>43e00adbbc09e4b65f09e81e5bd2b716579a6a61</td>
+<td>Microsoft Windows Hardware Compatibility Publisher</td>
+<td>2022-09-14</td>
+<td>大连纵梦网络科技有限公司  (Dalian Zongmeng Network Technology Co., Ltd.)</td>
+</tr>
+<tr>
+<td>ab7ebc82930e69621d9bccb6698928f4a3719d29</td>
+<td>Microsoft Windows Hardware Compatibility Publisher</td>
+<td>2022-09-14</td>
+<td>大连纵梦网络科技有限公司  (Dalian Zongmeng Network Technology Co., Ltd.)</td>
+</tr>
+<tr>
+<td>7e836dadc2e149a0b758c7e22c989cbfcce18684</td>
+<td>Microsoft Windows Hardware Compatibility Publisher</td>
+<td>2022-08-17</td>
+<td>大连纵梦网络科技有限公司  (Dalian Zongmeng Network Technology Co., Ltd.)</td>
+</tr>
+<tr>
+<td>0dd72b3b0b4e9f419d62a4cc7fa0a7d161468a5e</td>
+<td>Microsoft Windows Hardware Compatibility Publisher</td>
+<td>2023-03-22</td>
+<td>淮南锋川网络科技有限责任公司	(Huainan Fengchuan Network Technology Co., Ltd.)</td>
+</tr>
+<tr>
+<td>097e32d2d6f27a643281bf98875d15974b1f6d85</td>
+<td>N/A</td>
+<td>N/A</td>
+<td></td>
+</tr>
+<tr>
+<td>2084dd19a5403a4245f8bad30b55681d373ef638</td>
+<td>N/A</td>
+<td>N/A</td>
+<td></td>
+</tr>
+<tr>
+<td>c4d4489ee16ee537661760879bd36e0d4ab35d61</td>
+<td>N/A</td>
+<td>N/A</td>
+<td></td>
+</tr>
+<tr>
+<td>c98b3ce984b81086cea7b406eb3857fd6e724bc8</td>
+<td>N/A</td>
+<td>N/A</td>
+<td></td>
+</tr>
+<tr>
+<td>7079c000d9d25c02d89f0bae5abfe54136daf912</td>
+<td>N/A</td>
+<td>N/A</td>
+<td></td>
+</tr>
+<tr>
+<td>c4aa3e66331b96b81bd8758e5abcba121a398886</td>
+<td>Sharp Brilliance Communication Technology Co., Ltd.</td>
+<td>2023-08-23</td>
+<td></td>
+</tr>
+<tr>
+<td>9883593910917239fc8ff8399e133c8c73b214bc</td>
+<td>N/A</td>
+<td>N/A</td>
+<td></td>
+</tr>
+<tr>
+<td>501114B39A3A6FB40FB5067E3711DC9389F5A802</td>
+<td>N/A</td>
+<td>N/A</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+    </div>
+    <div class="post-footer">
+      
+    </div>
+  </article>
+
+    </main>
+  </body>
+</html>

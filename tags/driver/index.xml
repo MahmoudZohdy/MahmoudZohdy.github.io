@@ -6,7 +6,16 @@
     <description>Recent content in Driver on Security Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 20 Aug 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://MahmoudZohdy.github.io/tags/driver/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 21 Jan 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://MahmoudZohdy.github.io/tags/driver/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>A Look into PlugX Kernel driver</title>
+      <link>https://MahmoudZohdy.github.io/posts/re/plugx/</link>
+      <pubDate>Sun, 21 Jan 2024 00:00:00 +0000</pubDate>
+      
+      <guid>https://MahmoudZohdy.github.io/posts/re/plugx/</guid>
+      <description>In this blog I will talk about the Signed kernel driver that is used in a recent PlugX attack, the signed kernel drivers that are found on Virus Total are signed through Windows Hardware compatibility program (WHCP) and Sharp Brilliance Communication Technology Co., Ltd., in summary the kernel driver act as user-mode loader which decrypt a 32-bit user-mode PE file and inject it inside Svchost.exe as child process for services.exe.</description>
+    </item>
+    
     <item>
       <title>Loaded Drivers Enumeration</title>
       <link>https://MahmoudZohdy.github.io/posts/practical_reverse_engineering/enumerate_loaded_drivers_every_10sec/</link>

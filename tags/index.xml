@@ -6,13 +6,67 @@
     <description>Recent content in Tags on Security Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 20 Aug 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://MahmoudZohdy.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 21 Jan 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://MahmoudZohdy.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>CTI</title>
+      <link>https://MahmoudZohdy.github.io/tags/cti/</link>
+      <pubDate>Sun, 21 Jan 2024 00:00:00 +0000</pubDate>
+      
+      <guid>https://MahmoudZohdy.github.io/tags/cti/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>Driver</title>
       <link>https://MahmoudZohdy.github.io/tags/driver/</link>
-      <pubDate>Sat, 20 Aug 2022 00:00:00 +0000</pubDate>
+      <pubDate>Sun, 21 Jan 2024 00:00:00 +0000</pubDate>
       
       <guid>https://MahmoudZohdy.github.io/tags/driver/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Kernel</title>
+      <link>https://MahmoudZohdy.github.io/tags/kernel/</link>
+      <pubDate>Sun, 21 Jan 2024 00:00:00 +0000</pubDate>
+      
+      <guid>https://MahmoudZohdy.github.io/tags/kernel/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>malwareanalysis</title>
+      <link>https://MahmoudZohdy.github.io/tags/malwareanalysis/</link>
+      <pubDate>Sun, 21 Jan 2024 00:00:00 +0000</pubDate>
+      
+      <guid>https://MahmoudZohdy.github.io/tags/malwareanalysis/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>PlugX</title>
+      <link>https://MahmoudZohdy.github.io/tags/plugx/</link>
+      <pubDate>Sun, 21 Jan 2024 00:00:00 +0000</pubDate>
+      
+      <guid>https://MahmoudZohdy.github.io/tags/plugx/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Reverseengineering</title>
+      <link>https://MahmoudZohdy.github.io/tags/reverseengineering/</link>
+      <pubDate>Sun, 21 Jan 2024 00:00:00 +0000</pubDate>
+      
+      <guid>https://MahmoudZohdy.github.io/tags/reverseengineering/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Windows_Internal</title>
+      <link>https://MahmoudZohdy.github.io/tags/windows_internal/</link>
+      <pubDate>Sun, 21 Jan 2024 00:00:00 +0000</pubDate>
+      
+      <guid>https://MahmoudZohdy.github.io/tags/windows_internal/</guid>
       <description></description>
     </item>
     
@@ -40,15 +94,6 @@
       <pubDate>Sat, 20 Aug 2022 00:00:00 +0000</pubDate>
       
       <guid>https://MahmoudZohdy.github.io/tags/timers/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Windows_Internal</title>
-      <link>https://MahmoudZohdy.github.io/tags/windows_internal/</link>
-      <pubDate>Sat, 20 Aug 2022 00:00:00 +0000</pubDate>
-      
-      <guid>https://MahmoudZohdy.github.io/tags/windows_internal/</guid>
       <description></description>
     </item>
     
