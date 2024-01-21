@@ -218,18 +218,20 @@ In summary the kernel driver act as user-mode loader which decrypt a 32-bit user
 <p><img src="https://github.com/MahmoudZohdy/MahmoudZohdy.github.io/raw/main/doc/images/plugx/hook.png" alt="Use-Mode Component"></p>
 <p><strong>Figure 26: Use-Mode Component.</strong></p>
 <h1 id="yare-rule">Yare Rule:</h1>
-<p>rule PlugX{
-meta:
-author = &ldquo;Mahmoud Zohdy&rdquo;
-date_created = &ldquo;2024-01-20&rdquo;
-description = &ldquo;Kernel driver used in recent PlugX attack&rdquo;</p>
-<p>strings:
-$string0 = &ldquo;\SystemRoot\system32\drivers\DtSfProtect&rdquo; wide ascii
-$string1 = &ldquo;\DtSfProtect{A71A0369-D7CA-4d4f-9EEE-01F8FE53C0D3}&rdquo; wide ascii</p>
-<p>condition:
-uint16(0) == 0x5A4D and uint32(uint32(0x3C)) == 0x00004550 and any of ( $string* )
-}</p>
-<h1 id="ioc">IOC:</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>rule PlugX{
+</span></span><span style="display:flex;"><span>    meta:
+</span></span><span style="display:flex;"><span>author <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Mahmoud Zohdy&#34;</span>
+</span></span><span style="display:flex;"><span>date_created <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;2024-01-20&#34;</span>
+</span></span><span style="display:flex;"><span>description <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Kernel driver used in recent PlugX attack&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>strings:
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">$</span>string0 <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">SystemRoot</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">system32</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">drivers</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">DtSfProtect&#34;</span> wide ascii
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">$</span>string1 <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">DtSfProtect{A71A0369-D7CA-4d4f-9EEE-01F8FE53C0D3}&#34;</span> wide ascii
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>condition:
+</span></span><span style="display:flex;"><span>uint16(<span style="color:#ae81ff">0</span>) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0x5A4D</span> and uint32(uint32(<span style="color:#ae81ff">0x3C</span>)) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0x00004550</span> and any of ( <span style="color:#960050;background-color:#1e0010">$</span>string<span style="color:#f92672">*</span> )
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="ioc">IOC:</h1>
 <table>
 <thead>
 <tr>
