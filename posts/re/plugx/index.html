@@ -149,7 +149,7 @@ In summary the kernel driver act as user-mode loader which decrypt a 32-bit user
 <p><strong>Decryption_Key</strong>=  &ldquo;ec,a4,00,c4&rdquo;</p>
 <p><img src="https://github.com/MahmoudZohdy/MahmoudZohdy.github.io/raw/main/doc/images/plugx/decryptionkey.png" alt="Read Decryption Key from Registry"></p>
 <p><strong>Figure 10: Read Decryption Key from Registry.</strong></p>
-<p>After that the driver will resolve the needed API functions from the windows kernel and from ntdll.dll and kernel32.dll, it will use the bellow struct to resolve the address and it will do that by doing the following steps:</p>
+<p>After that the driver will resolve the needed API functions from the windows kernel and from ntdll.dll and kernel32.dll the driver keeps the API information in the structure <strong>API_Info</strong> and it will do the following steps to fill in the structure fields:</p>
 <ul>
 <li>For ntdll.dll and kernel APIs
 <ol>
