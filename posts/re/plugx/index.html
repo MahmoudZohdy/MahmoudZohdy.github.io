@@ -129,17 +129,17 @@ In summary the kernel driver act as user-mode loader which decrypt a 32-bit user
 <p>Also, the registered filesystem callback pre-operation and post-operation does not do any monitor/protection and just return.</p>
 <p><img src="https://github.com/MahmoudZohdy/MahmoudZohdy.github.io/raw/main/doc/images/plugx/precreate.png" alt="FileSystem Pre-Operation"></p>
 <p><strong>Figure 3: FileSystem Pre-Operation.</strong></p>
-<p>Then it creates <strong>Process Object Notifications</strong> for <strong>protection</strong> it monitors any attempt to open the user-mode process and forbids any attempt to access from kernel drivers and user mode process.</p>
-<p><img src="https://github.com/MahmoudZohdy/MahmoudZohdy.github.io/raw/main/doc/images/plugx/registerobjectcallback.png" alt="Register pre-Process object Callback"></p>
-<p><strong>Figure 4: Register pre-Process object Callback.</strong></p>
+<p>Then it creates <strong>Process Object Notifications</strong> for <strong>protection</strong> it monitors any attempt to open the user-mode process and forbids any attempt to access it from kernel drivers and user mode process, so the user-mode component can not be terminated either from user-mode and from kernel mode.</p>
+<p><img src="https://github.com/MahmoudZohdy/MahmoudZohdy.github.io/raw/main/doc/images/plugx/registerobjectcallback.png" alt="Register Process object Callback"></p>
+<p><strong>Figure 4: Register Process object Callback.</strong></p>
 <p><img src="https://github.com/MahmoudZohdy/MahmoudZohdy.github.io/raw/main/doc/images/plugx/processobjectpreoperation.png" alt="Pre-Process Callback Function"></p>
 <p><strong>Figure 5: Pre-Process Callback Function.</strong></p>
 <p>After those initializations it creates a thread that will be responsible for resolving all the needed functions address and starting the main user-mode component.</p>
 <p>It first tries to check if <strong>services.exe</strong> process started or not, it do that by using the <strong>NtQuerySystemInformation</strong> API to get information about the running process, and if <strong>services.exe</strong> still not running it will go in infinite loop until it starts before continue its operation.</p>
 <p><img src="https://github.com/MahmoudZohdy/MahmoudZohdy.github.io/raw/main/doc/images/plugx/servicesprocess.png" alt="Check if Services.exe process running"></p>
-<p><strong>Figure 6: Pre-Process Callback Function.</strong></p>
+<p><strong>Figure 6: Check if Services.exe process running.</strong></p>
 <p><img src="https://github.com/MahmoudZohdy/MahmoudZohdy.github.io/raw/main/doc/images/plugx/loop.png" alt="Loop untill Services.exe start"></p>
-<p><strong>Figure 7: Pre-Process Callback Function.</strong></p>
+<p><strong>Figure 7: Loop untill Services.exe start.</strong></p>
 <p>Then it reads configuration from the registry key &ldquo;<strong>\Registry\Machine\SOFTWARE\DtSft\d1</strong>&rdquo;  and value &ldquo;<strong>M1</strong>&rdquo; and the data is compared to the current system time, and based on the data in that registry &ldquo;76 da 34 01&rdquo; if the current time is after &ldquo;<strong>Wednesday, March 9, 2033 8:07:29 PM</strong>&rdquo; the driver will not continue operation and return and will not start the user-mode component</p>
 <p><img src="https://github.com/MahmoudZohdy/MahmoudZohdy.github.io/raw/main/doc/images/plugx/time1.png" alt="Read Attack time from registry"></p>
 <p><strong>Figure 8: Read Attack time from registry.</strong></p>
