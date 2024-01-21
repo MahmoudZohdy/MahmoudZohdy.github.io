@@ -215,6 +215,7 @@ In summary the kernel driver act as user-mode loader which decrypt a 32-bit user
 <p><strong>Figure 24: Hook Ntdll!NtClose to make the shellcode execute.</strong></p>
 <p><img src="https://github.com/MahmoudZohdy/MahmoudZohdy.github.io/raw/main/doc/images/plugx/hook.png" alt="Hook Ntdll!NtClose to make the shellcode execute"></p>
 <p><strong>Figure 25: Hook Ntdll!NtClose to make the shellcode execute.</strong></p>
+<h1 id="user-mode-component">User-Mode Component</h1>
 <p>User-mode component is a simple code that injects another 32-bit PE module in svchost.exe process and monitors it if it gets terminated it will start it again.</p>
 <p><img src="https://github.com/MahmoudZohdy/MahmoudZohdy.github.io/raw/main/doc/images/plugx/usercomponent.png" alt="Use-Mode Component"></p>
 <p><strong>Figure 26: Use-Mode Component.</strong></p>
